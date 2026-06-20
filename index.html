@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet RouteViews — BGP Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="nav-logo">◉</span>
+      <span class="nav-title">BGP Monitor</span>
+    </div>
+    <div class="nav-meta">
+      <span class="nav-period" id="periodLabel">2026-01</span>
+      <span class="nav-dot">·</span>
+      <span class="nav-source">RouteViews route-views2</span>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- Stats Cards -->
+  <section class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-value" id="statEvents">—</div><div class="stat-label">总事件</div></div>
+    <div class="stat-card"><div class="stat-value" id="statFullOutage">—</div><div class="stat-label">全网故障 (B)</div></div>
+    <div class="stat-card"><div class="stat-value" id="statFlapping">—</div><div class="stat-label">路由振荡 (C)</div></div>
+    <div class="stat-card"><div class="stat-value" id="statPermanent">—</div><div class="stat-label">永久消失 (D)</div></div>
+  </section>
+
+  <!-- Charts Row -->
+  <div class="charts-row">
+    <section class="chart-section" id="dailyTrendSection">
+      <div class="section-header">
+        <h2>每日事件趋势</h2>
+        <span class="section-sub">按日期聚合</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="dailyChart"></canvas>
+      </div>
+    </section>
+    <section class="chart-section" id="typeDistSection">
+      <div class="section-header">
+        <h2>事件类型分布</h2>
+        <span class="section-sub">各类型占比</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="typeChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- Top Prefixes + Search -->
+  <div class="content-row">
+    <section class="table-section" id="topPrefixesSection">
+      <div class="section-header">
+        <h2>事件最多前缀 Top 50</h2>
+        <span class="section-sub">按事件总数排序</span>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="prefixTable">
+          <thead><tr><th>#</th><th>前缀</th><th>事件数</th></tr></thead>
+          <tbody id="prefixBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="search-section" id="searchSection">
+      <div class="section-header">
+        <h2>前缀查询</h2>
+        <span class="section-sub">输入前缀查看详情</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="103.116.16.0/24" spellcheck="false">
+        <button id="searchBtn">查询</button>
+      </div>
+      <div id="searchResult" class="search-result"></div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>Data from RouteViews route-views2 · Processed across 5 nodes</span>
+    <span id="updateTime">—</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
