@@ -230,6 +230,7 @@ async function loadEvent() {
   }
   
   renderEvent(eventData);
+  window._vps = vps;
 }
 
 function renderEvent(ev) {
@@ -277,7 +278,7 @@ function renderEvent(ev) {
     rawLink.innerHTML = '📄 查看原始数据 →';
     heroBar.querySelector('.meta').after(rawLink);
   }
-  rawLink.href = `raw.html?prefix=${encodeURIComponent(prefix)}&vps=${vps || ''}`;
+  rawLink.href = `raw.html?prefix=${encodeURIComponent(prefix)}&vps=${window._vps || ''}`;
   
   const badge = document.getElementById('eventTypeBadge');
   badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;
