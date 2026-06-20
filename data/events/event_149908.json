@@ -1,0 +1,11 @@
+{
+  "prefix": "91.195.127.0/24",
+  "event_type": "D",
+  "start_time": 1767647318.868582,
+  "end_time": 1767647626.784328,
+  "total_peers": 0,
+  "total_w": 15,
+  "close_reason": "\u8d85\u65f6, 13\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "updates": [],
+  "topology": []
+}

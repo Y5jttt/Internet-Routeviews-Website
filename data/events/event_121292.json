@@ -1,0 +1,119 @@
+{
+  "prefix": "143.105.204.0/23",
+  "event_type": "P",
+  "type_name": "\u90e8\u5206\u65ad\u5f00",
+  "origin_as": 0,
+  "start_time": 1767589574.303229,
+  "end_time": 1767589574.303229,
+  "duration_sec": 0.0,
+  "duration_str": "0\u79d2",
+  "total_peers": 1,
+  "max_withdrawn": 0,
+  "total_w": 0,
+  "total_a": 1,
+  "close_reason": "\u8d85\u65f6, 0\u4e2a\u5bf9\u7b49\u4f53\u4e2d0\u4e2a\u6062\u590d",
+  "w_peers": [],
+  "a_peers": [
+    3741
+  ],
+  "w_count": 0,
+  "a_count": 1,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [
+    {
+      "peer_ip": "198.129.33.85",
+      "peer_as": 293,
+      "as_path": "293 6939 14593"
+    },
+    {
+      "peer_ip": "198.58.198.252",
+      "peer_as": 1403,
+      "as_path": "1403 14593"
+    },
+    {
+      "peer_ip": "137.164.16.84",
+      "peer_as": 2152,
+      "as_path": "2152 6461 14593"
+    },
+    {
+      "peer_ip": "202.232.0.3",
+      "peer_as": 2497,
+      "as_path": "2497 3257 14593"
+    },
+    {
+      "peer_ip": "129.250.1.71",
+      "peer_as": 2914,
+      "as_path": "2914 6461 14593"
+    },
+    {
+      "peer_ip": "147.28.7.2",
+      "peer_as": 3130,
+      "as_path": "3130 174 6461 14593"
+    },
+    {
+      "peer_ip": "89.149.178.10",
+      "peer_as": 3257,
+      "as_path": "3257 14593"
+    },
+    {
+      "peer_ip": "217.192.89.50",
+      "peer_as": 3303,
+      "as_path": "3303 3257 14593"
+    },
+    {
+      "peer_ip": "208.51.134.255",
+      "peer_as": 3549,
+      "as_path": "3549 3356 6461 14593"
+    },
+    {
+      "peer_ip": "168.209.255.56",
+      "peer_as": 3741,
+      "as_path": "3741 6461 14593"
+    },
+    {
+      "peer_ip": "64.71.137.241",
+      "peer_as": 6939,
+      "as_path": "6939 14593"
+    },
+    {
+      "peer_ip": "12.0.1.63",
+      "peer_as": 7018,
+      "as_path": "7018 6461 14593"
+    },
+    {
+      "peer_ip": "140.192.8.16",
+      "peer_as": 20130,
+      "as_path": "20130 6939 14593"
+    },
+    {
+      "peer_ip": "45.61.0.85",
+      "peer_as": 22652,
+      "as_path": "22652 3257 14593"
+    },
+    {
+      "peer_ip": "105.16.0.247",
+      "peer_as": 37100,
+      "as_path": "37100 6461 14593"
+    },
+    {
+      "peer_ip": "91.218.184.60",
+      "peer_as": 49788,
+      "as_path": "49788 12552 6461 14593"
+    },
+    {
+      "peer_ip": "37.139.139.17",
+      "peer_as": 57866,
+      "as_path": "57866 5511 3257 14593"
+    }
+  ],
+  "updates": [
+    {
+      "ts": 1767589574.303229,
+      "type": "A",
+      "peer_as": 3741,
+      "as_path": "3741 6461 14593"
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u90e8\u5206\u65ad\u5f00\u4e8b\u4ef6\u3002\u8d85\u65f6, 0\u4e2a\u5bf9\u7b49\u4f53\u4e2d0\u4e2a\u6062\u590d\u3002\u6301\u7eed0\u79d2\uff0c\u6d89\u53ca0\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}
