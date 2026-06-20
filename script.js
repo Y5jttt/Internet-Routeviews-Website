@@ -10,6 +10,14 @@ const TYPE_LABELS = {
 };
 
 let dailyChart = null, typeChart = null;
+let eventsCache = null;
+
+async function loadEvents() {
+  try {
+    const res = await fetch('data/events_summary.json');
+    if (res.ok) eventsCache = await res.json();
+  } catch(e) {}
+}
 
 async function loadData() {
   try {
@@ -169,6 +177,26 @@ async function doSearch() {
   }
 }
 
+function showEventList(events, typeFilter) {
+  const resultDiv = document.getElementById('searchResult');
+  const title = typeFilter ? `类型 ${typeFilter} 事件 (前 ${events.length} 条)` : '最新事件 (前 50 条)';
+  
+  let html = `<div style="font-weight:600;margin-bottom:8px;">${title}</div>`;
+  
+  events.forEach((ev, i) => {
+    const start = ev.start ? new Date(ev.start * 1000).toISOString().slice(5, 16).replace('T', ' ') : '?';
+    const badge = `<span class="event-type-badge event-type-${ev.type}">${ev.type}</span>`;
+    html += `<div class="event-item">
+      <span class="event-time">${start}</span>
+      ${badge}
+      <span class="event-reason">${ev.prefix}</span>
+      <span style="font-family:JetBrains Mono;font-size:11px;color:#6B7280;">${ev.reason ? ev.reason.slice(0, 30) : ''}</span>
+    </div>`;
+  });
+  
+  resultDiv.innerHTML = html;
+}
+
 async function init() {
   const data = await loadData();
   if (!data) return;
@@ -180,6 +208,25 @@ async function init() {
   renderDailyChart(data);
   renderTypeChart(data);
   renderTopPrefixes(data);
+  
+  // 加载 events 概要
+  await loadEvents();
+  
+  // 点击统计卡片，显示对应类型的事件
+  document.querySelectorAll('.stat-card').forEach((card, i) => {
+    card.style.cursor = 'pointer';
+    card.title = '点击查看详情';
+    card.addEventListener('click', () => {
+      const types = ['events', 'B', 'C', 'D'];
+      const et = types[i];
+      if (et === 'events' && eventsCache) {
+        showEventList(eventsCache.events.slice(0, 50));
+      } else if (eventsCache) {
+        const filtered = eventsCache.events.filter(e => e.type === et).slice(0, 50);
+        showEventList(filtered, et);
+      }
+    });
+  });
   
   document.getElementById('searchBtn').addEventListener('click', doSearch);
   document.getElementById('searchInput').addEventListener('keydown', e => {
