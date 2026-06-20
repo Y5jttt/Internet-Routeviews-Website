@@ -70,6 +70,8 @@
     </div>
     <div class="nav-meta">
       <span class="nav-period">事件详情</span>
+      <span class="nav-dot">·</span>
+      <a href="raw.html" style="color:var(--accent);text-decoration:none;font-size:13px;">原始数据</a>
     </div>
   </div>
 </nav>
@@ -137,6 +139,7 @@ async function loadEvent() {
   const params = new URLSearchParams(location.search);
   const eid = params.get('id');
   const prefix = params.get('prefix');
+  const vps = params.get('vps');
   
   if (!eid && !prefix) {
     document.getElementById('app').innerHTML = '<div style="text-align:center;padding:40px;color:#6B7280;">未指定事件 ID 或前缀</div>';
@@ -263,6 +266,18 @@ function renderEvent(ev) {
   document.getElementById('eventEnd').textContent = endDisplay;
   document.getElementById('eventDuration').textContent = durDisplay;
   document.getElementById('eventPeers').textContent = ev.total_peers || ev.peers || (ev.withdrawn || '?');
+  
+  // Add raw data link
+  const heroBar = document.getElementById('heroBar');
+  let rawLink = heroBar.querySelector('.raw-link');
+  if (!rawLink) {
+    rawLink = document.createElement('a');
+    rawLink.className = 'raw-link';
+    rawLink.style.cssText = 'display:inline-block;margin-top:10px;font-size:12px;color:var(--accent);text-decoration:none;';
+    rawLink.innerHTML = '📄 查看原始数据 →';
+    heroBar.querySelector('.meta').after(rawLink);
+  }
+  rawLink.href = `raw.html?prefix=${encodeURIComponent(prefix)}&vps=${vps || ''}`;
   
   const badge = document.getElementById('eventTypeBadge');
   badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;

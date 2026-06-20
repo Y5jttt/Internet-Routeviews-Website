@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原始数据 — BGP Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.raw-toolbar {
+  display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;
+  background:var(--card); border-radius:12px; padding:16px 20px;
+  border:1px solid var(--border);
+}
+.raw-toolbar input {
+  flex:1; min-width:200px; padding:8px 12px; background:var(--bg);
+  border:1px solid var(--border); border-radius:8px; color:var(--text);
+  font-family:JetBrains Mono; font-size:13px; outline:none;
+}
+.raw-toolbar input:focus { border-color:var(--accent); }
+.raw-toolbar button {
+  padding:8px 16px; background:var(--accent); color:#0B0F19;
+  border:none; border-radius:8px; font-weight:600; cursor:pointer;
+}
+.raw-toolbar button:hover { opacity:0.85; }
+.raw-toolbar select {
+  padding:8px 12px; background:var(--bg); border:1px solid var(--border);
+  border-radius:8px; color:var(--text); font-size:13px; outline:none;
+}
+
+.panel-row {
+  display:grid; grid-template-columns: 1.2fr 1fr;
+  gap:16px; margin-bottom:16px;
+}
+@media(max-width:900px) { .panel-row { grid-template-columns:1fr; } }
+
+.panel {
+  background:var(--card); border-radius:12px; border:1px solid var(--border);
+  overflow:hidden;
+}
+.panel-header {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  font-size:14px; font-weight:600;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.panel-body {
+  overflow:auto; max-height:600px;
+  font-family:JetBrains Mono; font-size:12px; line-height:1.6;
+}
+.panel-body pre {
+  margin:0; padding:12px 20px; color:#D1D5DB;
+  white-space:pre-wrap; word-break:break-all;
+}
+.line-num {
+  color:var(--muted); user-select:none; margin-right:12px;
+  display:inline-block; width:40px; text-align:right;
+}
+.raw-row-w { color:var(--warning); }
+.raw-row-a { color:var(--accent); }
+.raw-row-rib { color:#60A5FA; }
+.empty-state { padding:40px; text-align:center; color:var(--muted); font-size:14px; }
+
+.copy-btn {
+  padding:4px 10px; background:var(--bg); border:1px solid var(--border);
+  border-radius:4px; color:var(--muted); font-size:11px; cursor:pointer;
+}
+.copy-btn:hover { border-color:var(--accent); color:var(--accent); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <a href="./" style="text-decoration:none;display:flex;align-items:center;gap:10px;color:inherit;">
+        <span class="nav-logo">◉</span>
+        <span class="nav-title">BGP Monitor</span>
+      </a>
+    </div>
+    <div class="nav-meta">
+      <span class="nav-period">原始数据</span>
+      <span class="nav-dot">·</span>
+      <a href="./" style="color:var(--accent);text-decoration:none;font-size:13px;">仪表盘</a>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="breadcrumb"><a href="./">← 返回仪表盘</a></div>
+
+  <div class="raw-toolbar">
+    <input type="text" id="prefixInput" placeholder="103.116.16.0/24" spellcheck="false">
+    <select id="vpsSelect">
+      <option value="">自动(VPS-0=宕机)</option>
+      <option value="1">VPS-1 (10.3.12.10)</option>
+      <option value="2">VPS-2 (10.3.4.13)</option>
+      <option value="3">VPS-3 (10.3.8.11)</option>
+      <option value="4">VPS-4 (10.3.8.17)</option>
+    </select>
+    <button id="queryBtn">查询</button>
+    <button id="loadSampleBtn">载入样本</button>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel" id="updatesPanel">
+      <div class="panel-header">
+        <span>Update 原始记录</span>
+        <button class="copy-btn" id="copyUpdatesBtn">复制</button>
+      </div>
+      <div class="panel-body" id="updatesBody">
+        <div class="empty-state">输入前缀后点击查询</div>
+      </div>
+    </div>
+
+    <div class="panel" id="ribPanel">
+      <div class="panel-header">
+        <span>RIB 路径快照</span>
+        <button class="copy-btn" id="copyRibBtn">复制</button>
+      </div>
+      <div class="panel-body" id="ribBody">
+        <div class="empty-state">查询后将显示最近的路径数据</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>Data from RouteViews route-views2</span>
+  </div>
+</footer>
+
+<script>
+const VPS_MAP = {'1':'10.3.12.10','2':'10.3.4.13','3':'10.3.8.11','4':'10.3.8.17'};
+const VPS_IDS = {1:1, 2:2, 3:3, 4:4};
+
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  return d.toISOString().slice(5,19).replace('T',' ');
+}
+
+async function queryData() {
+  const prefix = document.getElementById('prefixInput').value.trim();
+  if (!prefix) return;
+  
+  const vpsSelect = document.getElementById('vpsSelect').value;
+  const updatesBody = document.getElementById('updatesBody');
+  const ribBody = document.getElementById('ribBody');
+  
+  updatesBody.innerHTML = '<div class="empty-state">查询中...</div>';
+  ribBody.innerHTML = '<div class="empty-state">查询中...</div>';
+  
+  // Determine VPS if not specified
+  let vps;
+  if (vpsSelect) {
+    vps = parseInt(vpsSelect);
+  } else {
+    // Auto-detect from summary
+    try {
+      const s = await fetch('data/events_summary.json');
+      if (s.ok) {
+        const sum = await s.json();
+        const found = (sum.events || []).find(e => e.prefix === prefix);
+        if (found && found.vps !== undefined) vps = found.vps;
+      }
+    } catch(e) {}
+    
+    // Also load prefix summary if available
+    const pf = prefix.replace('/','_');
+    try {
+      const r = await fetch(`data/prefixes/${pf}.json`);
+      if (r.ok) {
+        const d = await r.json();
+        if (d.events && d.events.length > 0) {
+          let html = `<div style="padding:12px 20px;color:var(--muted);font-size:12px;">前缀 ${prefix} 共有 ${d.events.length} 条事件</div>`;
+          d.events.slice(0,100).forEach(ev => {
+            const cls = ev.reason && (ev.reason.includes('撤回')||ev.reason.includes('消失')) ? 'raw-row-w' : 'raw-row-a';
+            html += `<div class="${cls}" style="padding:4px 20px;border-bottom:1px solid rgba(31,41,55,0.3);">
+              <span class="line-num"></span>${ev.time || ''} → ${ev.reason || ''}
+            </div>`;
+          });
+          updatesBody.innerHTML = html;
+        }
+      }
+    } catch(e) {}
+  }
+  
+  // Show update records from the VPS event file
+  if (vps && vps > 0) {
+    const pf = prefix.replace('/','_');
+    // Try loading event detail file
+    let foundAny = false;
+    const idsToTry = [];
+    
+    // Load summary to find event IDs
+    try {
+      const s = await fetch('data/events_summary.json');
+      if (s.ok) {
+        const sum = await s.json();
+        (sum.events || []).forEach(e => {
+          if (e.prefix === prefix && (!vps || e.vps === vps)) {
+            idsToTry.push(e.id);
+          }
+        });
+      }
+    } catch(e) {}
+    
+    // Try loading event detail files
+    const updates = [];
+    for (const eid of idsToTry.slice(0,3)) {
+      try {
+        const r = await fetch(`data/events/event_${vps}_${eid}.json`);
+        if (r.ok) {
+          const ev = await r.json();
+          if (ev.updates) {
+            updates.push(...ev.updates);
+          }
+          if (ev.topology && ev.topology.length > 0 && !foundAny) {
+            foundAny = true;
+            let rb = `<div style="padding:8px 20px;color:var(--muted);font-size:12px;">${ev.topology.length} 条路径</div>`;
+            ev.topology.forEach(p => {
+              rb += `<div class="raw-row-rib" style="padding:4px 20px;border-bottom:1px solid rgba(31,41,55,0.3);font-size:11px;">
+                <span class="line-num"></span>${p.peer_ip || ''} AS${p.peer_as} → ${p.as_path || ''}
+              </div>`;
+            });
+            ribBody.innerHTML = rb;
+          }
+        }
+      } catch(e) {}
+    }
+    
+    if (updates.length > 0) {
+      let html = `<div style="padding:8px 20px;color:var(--muted);font-size:12px;">${updates.length} 条 Update 记录</div>`;
+      updates.forEach(u => {
+        const cls = u.type === 'W' ? 'raw-row-w' : 'raw-row-a';
+        const mark = u.type === 'W' ? '❌ W' : '✅ A';
+        const ts = fmtTime(u.ts || u.timestamp);
+        html += `<div class="${cls}" style="padding:3px 20px;border-bottom:1px solid rgba(31,41,55,0.3);font-size:11px;">
+          <span class="line-num"></span>${ts} ${mark} AS${u.peer_as} ${u.as_path || u.path || ''}
+        </div>`;
+      });
+      updatesBody.innerHTML = html;
+    }
+  }
+  
+  if (vps && vps > 0 && !document.getElementById('ribBody').innerHTML.includes('条路径')) {
+    ribBody.innerHTML = '<div class="empty-state">该前缀在 RIB 中未找到路径数据</div>';
+  }
+}
+
+// Load sample
+async function loadSample() {
+  document.getElementById('prefixInput').value = '103.116.16.0/24';
+  document.getElementById('vpsSelect').value = '';
+  await queryData();
+}
+
+document.getElementById('queryBtn').addEventListener('click', queryData);
+document.getElementById('prefixInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') queryData();
+});
+document.getElementById('loadSampleBtn').addEventListener('click', loadSample);
+
+// Auto-query from URL params
+const urlParams = new URLSearchParams(location.search);
+if (urlParams.get('prefix')) {
+  document.getElementById('prefixInput').value = urlParams.get('prefix');
+  if (urlParams.get('vps')) {
+    document.getElementById('vpsSelect').value = urlParams.get('vps');
+  }
+  queryData();
+}
+
+// Copy buttons
+document.getElementById('copyUpdatesBtn').addEventListener('click', () => {
+  const text = document.getElementById('updatesBody').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyUpdatesBtn');
+    btn.textContent = '已复制';
+    setTimeout(() => btn.textContent = '复制', 1500);
+  });
+});
+document.getElementById('copyRibBtn').addEventListener('click', () => {
+  const text = document.getElementById('ribBody').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyRibBtn');
+    btn.textContent = '已复制';
+    setTimeout(() => btn.textContent = '复制', 1500);
+  });
+});
+</script>
+</body>
+</html>
