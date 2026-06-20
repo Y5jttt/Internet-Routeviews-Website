@@ -1,0 +1,94 @@
+{
+  "prefix": "45.187.235.0/24",
+  "event_type": "B",
+  "type_name": "\u5168\u7f51\u4e0d\u53ef\u8fbe",
+  "origin_as": 0,
+  "start_time": 1767321093.40787,
+  "end_time": 1767321980.809491,
+  "duration_sec": 887.4016208648682,
+  "duration_str": "15\u5206\u949f",
+  "total_peers": 3,
+  "max_withdrawn": 3,
+  "total_w": 5,
+  "total_a": 5,
+  "close_reason": "\u5168\u7f51\u6545\u969c: 3\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d",
+  "w_peers": [
+    293,
+    6939,
+    20130
+  ],
+  "a_peers": [
+    293,
+    6939,
+    20130
+  ],
+  "w_count": 5,
+  "a_count": 5,
+  "withdrawal_spread_sec": 870.0858738422394,
+  "recovery_spread_sec": 24.68318796157837,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767321093.40787,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767321956.126303,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207"
+    },
+    {
+      "ts": 1767321956.250466,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 266207"
+    },
+    {
+      "ts": 1767321962.716202,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767321962.864001,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767321963.170181,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207"
+    },
+    {
+      "ts": 1767321963.270726,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 266207"
+    },
+    {
+      "ts": 1767321963.367209,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767321963.493744,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767321980.809491,
+      "type": "A",
+      "peer_as": 293,
+      "as_path": "293 6939 266207"
+    }
+  ],
+  "topo_analysis": "",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5168\u7f51\u4e0d\u53ef\u8fbe\u4e8b\u4ef6\u3002\u5168\u7f51\u6545\u969c: 3\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d\u3002\u6301\u7eed15\u5206\u949f\uff0c\u6d89\u53ca3\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c3\u4e2a\u6062\u590d\u3002"
+}

@@ -1,0 +1,77 @@
+{
+  "prefix": "152.97.118.0/23",
+  "event_type": "A",
+  "type_name": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de",
+  "origin_as": 0,
+  "start_time": 1767335318.273244,
+  "end_time": 1767394632.561632,
+  "duration_sec": 59314.28838801384,
+  "duration_str": "16.5\u5c0f\u65f6",
+  "total_peers": 3,
+  "max_withdrawn": 1,
+  "total_w": 1,
+  "total_a": 3,
+  "close_reason": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d",
+  "w_peers": [
+    3257
+  ],
+  "a_peers": [
+    3257,
+    3303,
+    37100
+  ],
+  "w_count": 1,
+  "a_count": 3,
+  "withdrawal_spread_sec": 0.0,
+  "recovery_spread_sec": 59314.28838801384,
+  "topology": [
+    {
+      "peer_ip": "198.129.33.85",
+      "peer_as": 293,
+      "as_path": "293 6939 21766"
+    },
+    {
+      "peer_ip": "217.192.89.50",
+      "peer_as": 3303,
+      "as_path": "3303 6939 21766"
+    },
+    {
+      "peer_ip": "64.71.137.241",
+      "peer_as": 6939,
+      "as_path": "6939 21766"
+    },
+    {
+      "peer_ip": "140.192.8.16",
+      "peer_as": 20130,
+      "as_path": "20130 6939 21766"
+    }
+  ],
+  "updates": [
+    {
+      "ts": 1767335318.273244,
+      "type": "A",
+      "peer_as": 3303,
+      "as_path": "3303 6939 21766"
+    },
+    {
+      "ts": 1767394632.154344,
+      "type": "W",
+      "peer_as": 3257,
+      "as_path": ""
+    },
+    {
+      "ts": 1767394632.379069,
+      "type": "A",
+      "peer_as": 37100,
+      "as_path": "37100 3356 3257 21766"
+    },
+    {
+      "ts": 1767394632.561632,
+      "type": "A",
+      "peer_as": 3257,
+      "as_path": "3257 21766"
+    }
+  ],
+  "topo_analysis": "\u6240\u6709\u8def\u5f84\u5747\u7ecf\u8fc7 AS0\u3002",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u4e8b\u4ef6\u3002\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d\u3002\u6301\u7eed16.5\u5c0f\u65f6\uff0c\u6d89\u53ca1\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c3\u4e2a\u6062\u590d\u3002 \u62d3\u6251\u5206\u6790\uff1a\u6240\u6709\u8def\u5f84\u5747\u7ecf\u8fc7 AS0\u3002"
+}

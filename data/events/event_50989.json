@@ -1,0 +1,56 @@
+{
+  "prefix": "144.16.192.0/18",
+  "event_type": "A",
+  "type_name": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de",
+  "origin_as": 0,
+  "start_time": 1767334382.520211,
+  "end_time": 1767334382.940873,
+  "duration_sec": 0.42066192626953125,
+  "duration_str": "0\u79d2",
+  "total_peers": 3,
+  "max_withdrawn": 1,
+  "total_w": 1,
+  "total_a": 3,
+  "close_reason": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d",
+  "w_peers": [
+    7018
+  ],
+  "a_peers": [
+    2152,
+    7018,
+    20130
+  ],
+  "w_count": 1,
+  "a_count": 3,
+  "withdrawal_spread_sec": 0.0,
+  "recovery_spread_sec": 0.42066192626953125,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767334382.520211,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 6461 6461 6461 6461 4637 4637 4637 4637 9498 24186 24186 24186 24186 24186 24186"
+    },
+    {
+      "ts": 1767334382.693742,
+      "type": "A",
+      "peer_as": 2152,
+      "as_path": "2152 3356 4637 9498 24186 24186 24186 24186 24186 24186"
+    },
+    {
+      "ts": 1767334382.73549,
+      "type": "W",
+      "peer_as": 7018,
+      "as_path": ""
+    },
+    {
+      "ts": 1767334382.940873,
+      "type": "A",
+      "peer_as": 7018,
+      "as_path": "7018 6461 6461 6461 6461 4637 4637 4637 4637 9498 24186 24186 24186 24186 24186 24186"
+    }
+  ],
+  "topo_analysis": "",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u4e8b\u4ef6\u3002\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d\u3002\u6301\u7eed0\u79d2\uff0c\u6d89\u53ca1\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c3\u4e2a\u6062\u590d\u3002"
+}

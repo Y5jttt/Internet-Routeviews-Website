@@ -1,0 +1,89 @@
+{
+  "prefix": "130.137.136.0/24",
+  "event_type": "A",
+  "type_name": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de",
+  "origin_as": 0,
+  "start_time": 1767229267.078171,
+  "end_time": 1767229286.435591,
+  "duration_sec": 19.357419967651367,
+  "duration_str": "19\u79d2",
+  "total_peers": 6,
+  "max_withdrawn": 1,
+  "total_w": 1,
+  "total_a": 8,
+  "close_reason": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d",
+  "w_peers": [
+    6939
+  ],
+  "a_peers": [
+    293,
+    3549,
+    6939,
+    22652,
+    37100,
+    57866
+  ],
+  "w_count": 1,
+  "a_count": 8,
+  "withdrawal_spread_sec": 0.0,
+  "recovery_spread_sec": 19.357419967651367,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767229267.078171,
+      "type": "A",
+      "peer_as": 22652,
+      "as_path": "22652 174 16509"
+    },
+    {
+      "ts": 1767229278.438117,
+      "type": "A",
+      "peer_as": 293,
+      "as_path": "293 6453 16509"
+    },
+    {
+      "ts": 1767229278.444341,
+      "type": "A",
+      "peer_as": 3549,
+      "as_path": "3549 3356 1299 16509"
+    },
+    {
+      "ts": 1767229285.340759,
+      "type": "A",
+      "peer_as": 57866,
+      "as_path": "57866 5511 16509"
+    },
+    {
+      "ts": 1767229285.752123,
+      "type": "A",
+      "peer_as": 57866,
+      "as_path": "57866 5511 16509"
+    },
+    {
+      "ts": 1767229285.752292,
+      "type": "A",
+      "peer_as": 57866,
+      "as_path": "57866 6830 16509"
+    },
+    {
+      "ts": 1767229286.340331,
+      "type": "A",
+      "peer_as": 37100,
+      "as_path": "37100 6762 16509"
+    },
+    {
+      "ts": 1767229286.366823,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767229286.435591,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 1299 16509"
+    }
+  ],
+  "topo_analysis": "",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u4e8b\u4ef6\u3002\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d\u3002\u6301\u7eed19\u79d2\uff0c\u6d89\u53ca1\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c6\u4e2a\u6062\u590d\u3002"
+}

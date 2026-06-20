@@ -1,170 +1,62 @@
 {
-  "prefix": "188.212.116.0/22",
-  "event_type": "D",
-  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "prefix": "186.209.190.0/24",
+  "event_type": "B",
+  "type_name": "\u5168\u7f51\u4e0d\u53ef\u8fbe",
   "origin_as": 0,
-  "start_time": 1767356859.881598,
-  "end_time": 1767358057.851156,
-  "duration_sec": 1197.9695580005646,
-  "duration_str": "20\u5206\u949f",
-  "total_peers": 17,
-  "max_withdrawn": 17,
-  "total_w": 21,
-  "total_a": 0,
-  "close_reason": "\u8d85\u65f6, 17\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "start_time": 1767313743.23777,
+  "end_time": 1767313743.97875,
+  "duration_sec": 0.7409799098968506,
+  "duration_str": "1\u79d2",
+  "total_peers": 2,
+  "max_withdrawn": 2,
+  "total_w": 3,
+  "total_a": 2,
+  "close_reason": "\u5168\u7f51\u6545\u969c: 2\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d",
   "w_peers": [
-    293,
-    1403,
-    2152,
-    2497,
-    2914,
-    3130,
-    3257,
-    3303,
-    3549,
-    3741,
     6939,
-    7018,
-    20130,
-    22652,
-    37100,
-    49788,
-    57866
+    20130
   ],
-  "a_peers": [],
-  "w_count": 21,
-  "a_count": 0,
-  "withdrawal_spread_sec": 1197.9695580005646,
-  "recovery_spread_sec": 0.0,
+  "a_peers": [
+    6939,
+    20130
+  ],
+  "w_count": 3,
+  "a_count": 2,
+  "withdrawal_spread_sec": 0.7402458190917969,
+  "recovery_spread_sec": 0.30260300636291504,
   "topology": [],
   "updates": [
     {
-      "ts": 1767356859.881598,
-      "type": "W",
-      "peer_as": 3257,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356878.408994,
-      "type": "W",
-      "peer_as": 3549,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356879.520239,
-      "type": "W",
-      "peer_as": 3257,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356879.528108,
-      "type": "W",
-      "peer_as": 3303,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356879.751807,
-      "type": "W",
-      "peer_as": 7018,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356883.470171,
-      "type": "W",
-      "peer_as": 2152,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356886.9936,
+      "ts": 1767313743.23777,
       "type": "W",
       "peer_as": 6939,
       "as_path": ""
     },
     {
-      "ts": 1767356887.632663,
-      "type": "W",
-      "peer_as": 7018,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356887.819938,
-      "type": "W",
-      "peer_as": 3257,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356898.205405,
-      "type": "W",
-      "peer_as": 3130,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356901.383308,
-      "type": "W",
-      "peer_as": 49788,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356907.649845,
-      "type": "W",
-      "peer_as": 2914,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356908.913314,
+      "ts": 1767313743.291175,
       "type": "W",
       "peer_as": 20130,
       "as_path": ""
     },
     {
-      "ts": 1767356929.574593,
+      "ts": 1767313743.676147,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207 28227"
+    },
+    {
+      "ts": 1767313743.978016,
       "type": "W",
-      "peer_as": 2497,
+      "peer_as": 6939,
       "as_path": ""
     },
     {
-      "ts": 1767356933.828744,
-      "type": "W",
-      "peer_as": 3741,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356946.372936,
-      "type": "W",
-      "peer_as": 3130,
-      "as_path": ""
-    },
-    {
-      "ts": 1767356994.451203,
-      "type": "W",
-      "peer_as": 293,
-      "as_path": ""
-    },
-    {
-      "ts": 1767357153.421214,
-      "type": "W",
-      "peer_as": 22652,
-      "as_path": ""
-    },
-    {
-      "ts": 1767358048.082771,
-      "type": "W",
-      "peer_as": 57866,
-      "as_path": ""
-    },
-    {
-      "ts": 1767358054.8569,
-      "type": "W",
-      "peer_as": 37100,
-      "as_path": ""
-    },
-    {
-      "ts": 1767358057.851156,
-      "type": "W",
-      "peer_as": 1403,
-      "as_path": ""
+      "ts": 1767313743.97875,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 266207 28227"
     }
   ],
   "topo_analysis": "",
-  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 17\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed20\u5206\u949f\uff0c\u6d89\u53ca17\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c0\u4e2a\u6062\u590d\u3002"
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5168\u7f51\u4e0d\u53ef\u8fbe\u4e8b\u4ef6\u3002\u5168\u7f51\u6545\u969c: 2\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d\u3002\u6301\u7eed1\u79d2\uff0c\u6d89\u53ca2\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c2\u4e2a\u6062\u590d\u3002"
 }

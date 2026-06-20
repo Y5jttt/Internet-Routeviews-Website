@@ -1,0 +1,49 @@
+{
+  "prefix": "130.137.136.0/24",
+  "event_type": "A",
+  "type_name": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de",
+  "origin_as": 0,
+  "start_time": 1767231698.059708,
+  "end_time": 1767231698.192472,
+  "duration_sec": 0.13276386260986328,
+  "duration_str": "0\u79d2",
+  "total_peers": 2,
+  "max_withdrawn": 1,
+  "total_w": 1,
+  "total_a": 2,
+  "close_reason": "\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d",
+  "w_peers": [
+    6939
+  ],
+  "a_peers": [
+    3257,
+    6939
+  ],
+  "w_count": 1,
+  "a_count": 2,
+  "withdrawal_spread_sec": 0.0,
+  "recovery_spread_sec": 0.13276386260986328,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767231698.059708,
+      "type": "A",
+      "peer_as": 3257,
+      "as_path": "3257 6453 16509"
+    },
+    {
+      "ts": 1767231698.160939,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767231698.192472,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 1299 16509"
+    }
+  ],
+  "topo_analysis": "",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u4e8b\u4ef6\u3002\u5355\u5bf9\u7b49\u4f53\u64a4\u56de\u6062\u590d\u3002\u6301\u7eed0\u79d2\uff0c\u6d89\u53ca1\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c2\u4e2a\u6062\u590d\u3002"
+}

@@ -1,0 +1,106 @@
+{
+  "prefix": "189.126.212.0/24",
+  "event_type": "B",
+  "type_name": "\u5168\u7f51\u4e0d\u53ef\u8fbe",
+  "origin_as": 0,
+  "start_time": 1767454476.607569,
+  "end_time": 1767455347.526976,
+  "duration_sec": 870.9194071292877,
+  "duration_str": "15\u5206\u949f",
+  "total_peers": 3,
+  "max_withdrawn": 3,
+  "total_w": 6,
+  "total_a": 6,
+  "close_reason": "\u5168\u7f51\u6545\u969c: 3\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d",
+  "w_peers": [
+    293,
+    6939,
+    20130
+  ],
+  "a_peers": [
+    293,
+    6939,
+    20130
+  ],
+  "w_count": 6,
+  "a_count": 6,
+  "withdrawal_spread_sec": 853.7821691036224,
+  "recovery_spread_sec": 23.961019039154053,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767454476.607569,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455323.565957,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207 28227"
+    },
+    {
+      "ts": 1767455323.700929,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 266207 28227"
+    },
+    {
+      "ts": 1767455329.690557,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455329.841237,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207 28227"
+    },
+    {
+      "ts": 1767455329.921597,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455329.971643,
+      "type": "A",
+      "peer_as": 20130,
+      "as_path": "20130 6939 266207 28227"
+    },
+    {
+      "ts": 1767455330.036025,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455330.158781,
+      "type": "A",
+      "peer_as": 6939,
+      "as_path": "6939 266207 28227"
+    },
+    {
+      "ts": 1767455330.29056,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455330.389738,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767455347.526976,
+      "type": "A",
+      "peer_as": 293,
+      "as_path": "293 6939 266207 28227"
+    }
+  ],
+  "topo_analysis": "",
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u5168\u7f51\u4e0d\u53ef\u8fbe\u4e8b\u4ef6\u3002\u5168\u7f51\u6545\u969c: 3\u4e2a\u5bf9\u7b49\u4f53\u65ad\u8fde\u540e\u6062\u590d\u3002\u6301\u7eed15\u5206\u949f\uff0c\u6d89\u53ca3\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\uff0c3\u4e2a\u6062\u590d\u3002"
+}
