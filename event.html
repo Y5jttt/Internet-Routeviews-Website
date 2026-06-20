@@ -150,6 +150,23 @@ async function loadEvent() {
       const r = await fetch(`data/events/event_${eid}.json`);
       if (r.ok) eventData = await r.json();
     } catch(e) {}
+    
+    // Fallback: try to find in events_summary
+    if (!eventData) {
+      try {
+        const s = await fetch('data/events_summary.json');
+        if (s.ok) {
+          const summary = await s.json();
+          const found = (summary.events || []).find(e => e.id == eid);
+          if (found) {
+            eventData = found;
+            eventData.start_time = found.start;
+            eventData.end_time = found.end;
+            eventData.event_type = found.type;
+          }
+        }
+      } catch(e) {}
+    }
   } else if (prefix) {
     // Load from prefix JSON
     const pf = prefix.replace('/','_');

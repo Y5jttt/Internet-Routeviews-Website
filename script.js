@@ -136,7 +136,6 @@ function renderEventCards(eventsCache) {
   const container = document.getElementById('eventsContainer');
   if (!container || !eventsCache) return;
   
-  // 取最新的 B/C/D 类型事件，最多 10 个
   const filtered = (eventsCache.events || [])
     .filter(e => ['B','C','D'].includes(e.type))
     .slice(0, 10);
@@ -148,30 +147,30 @@ function renderEventCards(eventsCache) {
     const duration = ev.end && ev.start ? Math.round((ev.end - ev.start) / 60) : '?';
     const typeNames = {B:'全网故障', C:'路由振荡', D:'永久消失'};
     
-    const card = document.createElement('div');
-    card.className = 'event-card';
-    
     const prefixColor = ev.type === 'B' ? '#FF6B6B' : ev.type === 'C' ? '#FBBF24' : '#A78BFA';
     
-    card.innerHTML = `
-      <div class="event-card-header">
-        <span class="event-card-prefix" style="color:${prefixColor}">${ev.prefix}</span>
-        <span class="event-type-badge event-type-${ev.type}">${ev.type} ${typeNames[ev.type] || ''}</span>
-      </div>
-      <div class="event-card-reason">${ev.reason || ''}</div>
-      <div class="event-card-meta">
-        <span>${start}</span>
-        <span>${duration}m</span>
-        <span>${ev.peers || '?'} 对等体</span>
+    const link = document.createElement('a');
+    link.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix || '')}`;
+    link.style.textDecoration = 'none';
+    link.style.color = 'inherit';
+    link.style.display = 'block';
+    
+    link.innerHTML = `
+      <div class="event-card" style="cursor:pointer;">
+        <div class="event-card-header">
+          <span class="event-card-prefix" style="color:${prefixColor}">${ev.prefix}</span>
+          <span class="event-type-badge event-type-${ev.type}">${ev.type} ${typeNames[ev.type] || ''}</span>
+        </div>
+        <div class="event-card-reason">${ev.reason || ''}</div>
+        <div class="event-card-meta">
+          <span>${start}</span>
+          <span>${duration}m</span>
+          <span>${ev.peers || '?'} 对等体</span>
+        </div>
       </div>
     `;
     
-    card.addEventListener('click', () => {
-      // 跳转到事件详情页面
-      window.location.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix)}`;
-    });
-    
-    container.appendChild(card);
+    container.appendChild(link);
   });
 }
 
