@@ -132,6 +132,50 @@ function renderTopPrefixes(data) {
   });
 }
 
+function renderEventCards(eventsCache) {
+  const container = document.getElementById('eventsContainer');
+  if (!container || !eventsCache) return;
+  
+  // 取最新的 B/C/D 类型事件，最多 10 个
+  const filtered = (eventsCache.events || [])
+    .filter(e => ['B','C','D'].includes(e.type))
+    .slice(0, 10);
+  
+  container.innerHTML = '';
+  
+  filtered.forEach(ev => {
+    const start = ev.start ? new Date(ev.start * 1000).toISOString().slice(5, 16).replace('T', ' ') : '?';
+    const duration = ev.end && ev.start ? Math.round((ev.end - ev.start) / 60) : '?';
+    const typeNames = {B:'全网故障', C:'路由振荡', D:'永久消失'};
+    
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    
+    const prefixColor = ev.type === 'B' ? '#FF6B6B' : ev.type === 'C' ? '#FBBF24' : '#A78BFA';
+    
+    card.innerHTML = `
+      <div class="event-card-header">
+        <span class="event-card-prefix" style="color:${prefixColor}">${ev.prefix}</span>
+        <span class="event-type-badge event-type-${ev.type}">${ev.type} ${typeNames[ev.type] || ''}</span>
+      </div>
+      <div class="event-card-reason">${ev.reason || ''}</div>
+      <div class="event-card-meta">
+        <span>${start}</span>
+        <span>${duration}m</span>
+        <span>${ev.peers || '?'} 对等体</span>
+      </div>
+    `;
+    
+    card.addEventListener('click', () => {
+      document.getElementById('searchInput').value = ev.prefix;
+      doSearch();
+      document.getElementById('searchSection').scrollIntoView({behavior:'smooth'});
+    });
+    
+    container.appendChild(card);
+  });
+}
+
 async function doSearch() {
   const input = document.getElementById('searchInput').value.trim();
   const resultDiv = document.getElementById('searchResult');
@@ -211,6 +255,7 @@ async function init() {
   
   // 加载 events 概要
   await loadEvents();
+  renderEventCards(eventsCache);
   
   // 点击统计卡片，显示对应类型的事件
   document.querySelectorAll('.stat-card').forEach((card, i) => {
