@@ -1,0 +1,136 @@
+{
+  "prefix": "186.209.184.0/22",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767571346.044238,
+  "end_time": 1767643481.091796,
+  "duration_sec": 72135.04755783081,
+  "duration_str": "20.0\u5c0f\u65f6",
+  "total_peers": 2,
+  "max_withdrawn": 2,
+  "total_w": 18,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 2\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    3303,
+    6939
+  ],
+  "a_peers": [],
+  "w_count": 18,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767571346.044238,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767572266.793108,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767580465.85273,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767582292.820439,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767583208.344216,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767593260.296671,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767594173.044737,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767596912.466858,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767601484.430045,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767602390.160028,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767609721.176948,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767612434.874813,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767613348.039085,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767614261.528435,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767619740.299769,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623392.169698,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767632546.319247,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767643481.091796,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 2\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed20.0\u5c0f\u65f6\uff0c\u6d89\u53ca2\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

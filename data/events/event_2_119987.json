@@ -1,0 +1,136 @@
+{
+  "prefix": "136.36.240.0/20",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767598752.97362,
+  "end_time": 1767599768.617334,
+  "duration_sec": 1015.6437139511108,
+  "duration_str": "17\u5206\u949f",
+  "total_peers": 14,
+  "max_withdrawn": 14,
+  "total_w": 16,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 14\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    1403,
+    2497,
+    2914,
+    3130,
+    3257,
+    3303,
+    3741,
+    6939,
+    7018,
+    20130,
+    22652,
+    37100,
+    49788,
+    53767
+  ],
+  "a_peers": [],
+  "w_count": 16,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767598752.97362,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598752.992493,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598756.242189,
+      "type": "W",
+      "peer_as": 49788,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598758.555091,
+      "type": "W",
+      "peer_as": 2914,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598759.998267,
+      "type": "W",
+      "peer_as": 3257,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598763.75318,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598780.629789,
+      "type": "W",
+      "peer_as": 7018,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598781.569676,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598787.132147,
+      "type": "W",
+      "peer_as": 37100,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598801.849881,
+      "type": "W",
+      "peer_as": 49788,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598810.177515,
+      "type": "W",
+      "peer_as": 3130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598815.563162,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598824.417482,
+      "type": "W",
+      "peer_as": 3741,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598832.667669,
+      "type": "W",
+      "peer_as": 2497,
+      "as_path": ""
+    },
+    {
+      "ts": 1767598837.051878,
+      "type": "W",
+      "peer_as": 3130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767599768.617334,
+      "type": "W",
+      "peer_as": 22652,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 14\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed17\u5206\u949f\uff0c\u6d89\u53ca14\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

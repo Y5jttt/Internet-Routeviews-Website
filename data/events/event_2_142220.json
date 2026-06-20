@@ -1,0 +1,187 @@
+{
+  "prefix": "45.168.78.0/24",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767606566.881608,
+  "end_time": 1767644804.557126,
+  "duration_sec": 38237.67551803589,
+  "duration_str": "10.6\u5c0f\u65f6",
+  "total_peers": 5,
+  "max_withdrawn": 5,
+  "total_w": 26,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 5\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    293,
+    3303,
+    6939,
+    20130,
+    57463
+  ],
+  "a_peers": [],
+  "w_count": 26,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767606566.881608,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767606567.961669,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767606568.070788,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767606583.845697,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767606600.422175,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610026.048738,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610026.343813,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610026.56598,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610027.765787,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610067.747927,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610704.443846,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610704.641787,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610704.785594,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610731.332003,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767610735.14389,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767611297.648242,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767611297.812221,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767611297.970999,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767611318.685207,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767611346.177832,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644749.443555,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644749.588279,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644772.954868,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644786.223779,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644786.459759,
+      "type": "W",
+      "peer_as": 20130,
+      "as_path": ""
+    },
+    {
+      "ts": 1767644804.557126,
+      "type": "W",
+      "peer_as": 293,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 5\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed10.6\u5c0f\u65f6\uff0c\u6d89\u53ca5\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

@@ -146,11 +146,24 @@ async function loadEvent() {
   let eventData = null;
   
   if (eid) {
-    try {
-      const r = await fetch(`data/events/event_${eid}.json`);
-      if (r.ok) eventData = await r.json();
-    } catch(e) {}
+    // 尝试从 URL 参数获取 vps，如果事件是汇总中可见的，从汇总取
+    let vps = params.get('vps');
     
+    // 尝试加载带 VPS 前缀的文件
+    const tryLoadWithVps = async (v) => {
+      try {
+        const r = await fetch(`data/events/event_${v}_${eid}.json`);
+        if (r.ok) return await r.json();
+      } catch(e) {}
+      return null;
+    };
+    
+    // 尝试多个可能的 VPS
+    for (const v of [vps, 0, 1, 2, 3, 4]) {
+      if (v === null) continue;
+      eventData = await tryLoadWithVps(v);
+      if (eventData) break;
+    }
     // Fallback 1: events_summary
     if (!eventData) {
       try {
@@ -163,6 +176,11 @@ async function loadEvent() {
             eventData.start_time = found.start;
             eventData.end_time = found.end;
             eventData.event_type = found.type;
+            // 如果有 vps 信息，尝试精确加载
+            if (found.vps !== undefined) {
+              const r2 = await fetch(`data/events/event_${found.vps}_${eid}.json`);
+              if (r2.ok) eventData = await r2.json();
+            }
           }
         }
       } catch(e) {}

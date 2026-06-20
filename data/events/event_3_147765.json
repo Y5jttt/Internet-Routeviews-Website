@@ -1,0 +1,101 @@
+{
+  "prefix": "94.101.160.0/21",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767642575.705582,
+  "end_time": 1767642990.817715,
+  "duration_sec": 415.11213302612305,
+  "duration_str": "7\u5206\u949f",
+  "total_peers": 3,
+  "max_withdrawn": 3,
+  "total_w": 12,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 3\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    3303,
+    6939,
+    57463
+  ],
+  "a_peers": [],
+  "w_count": 12,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767642575.705582,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642615.638693,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642786.123897,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642787.28079,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642807.406496,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642815.947515,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642960.469852,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642960.91809,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642961.202096,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642962.182196,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642990.523197,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767642990.817715,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 3\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed7\u5206\u949f\uff0c\u6d89\u53ca3\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

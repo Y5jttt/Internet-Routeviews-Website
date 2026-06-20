@@ -1,0 +1,105 @@
+{
+  "prefix": "154.207.1.0/24",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767623037.928836,
+  "end_time": 1767623053.568237,
+  "duration_sec": 15.639400959014893,
+  "duration_str": "16\u79d2",
+  "total_peers": 7,
+  "max_withdrawn": 7,
+  "total_w": 12,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 7\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    2152,
+    3257,
+    3303,
+    3549,
+    6939,
+    7018,
+    57463
+  ],
+  "a_peers": [],
+  "w_count": 12,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767623037.928836,
+      "type": "W",
+      "peer_as": 57463,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623038.356582,
+      "type": "W",
+      "peer_as": 3257,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623038.621899,
+      "type": "W",
+      "peer_as": 3549,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623039.820066,
+      "type": "W",
+      "peer_as": 7018,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623049.177141,
+      "type": "W",
+      "peer_as": 7018,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623049.324132,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623049.833553,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623049.909259,
+      "type": "W",
+      "peer_as": 2152,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623049.938016,
+      "type": "W",
+      "peer_as": 6939,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623050.004675,
+      "type": "W",
+      "peer_as": 3549,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623050.686676,
+      "type": "W",
+      "peer_as": 3257,
+      "as_path": ""
+    },
+    {
+      "ts": 1767623053.568237,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 7\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed16\u79d2\uff0c\u6d89\u53ca7\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

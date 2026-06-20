@@ -1,0 +1,101 @@
+{
+  "prefix": "102.70.96.0/23",
+  "event_type": "D",
+  "type_name": "\u6c38\u4e45\u6d88\u5931",
+  "origin_as": 0,
+  "start_time": 1767604839.665653,
+  "end_time": 1767632704.937046,
+  "duration_sec": 27865.271393060684,
+  "duration_str": "7.7\u5c0f\u65f6",
+  "total_peers": 3,
+  "max_withdrawn": 3,
+  "total_w": 12,
+  "total_a": 0,
+  "close_reason": "\u8d85\u65f6, 3\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d",
+  "w_peers": [
+    1403,
+    3303,
+    53767
+  ],
+  "a_peers": [],
+  "w_count": 12,
+  "a_count": 0,
+  "withdrawal_spread_sec": 0,
+  "recovery_spread_sec": 0,
+  "topology": [],
+  "updates": [
+    {
+      "ts": 1767604839.665653,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767604864.382748,
+      "type": "W",
+      "peer_as": 3303,
+      "as_path": ""
+    },
+    {
+      "ts": 1767606993.933183,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767607009.563994,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    },
+    {
+      "ts": 1767613715.042118,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767613744.780954,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    },
+    {
+      "ts": 1767616225.081321,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767616235.535489,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    },
+    {
+      "ts": 1767631746.379881,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767631752.375059,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    },
+    {
+      "ts": 1767632677.229157,
+      "type": "W",
+      "peer_as": 53767,
+      "as_path": ""
+    },
+    {
+      "ts": 1767632704.937046,
+      "type": "W",
+      "peer_as": 1403,
+      "as_path": ""
+    }
+  ],
+  "conclusion": "\u8be5\u524d\u7f00\u53d1\u751f\u4e86\u4e00\u8d77\u6c38\u4e45\u6d88\u5931\u4e8b\u4ef6\u3002\u8d85\u65f6, 3\u4e2a\u5bf9\u7b49\u4f53\u672a\u6062\u590d\u3002\u6301\u7eed7.7\u5c0f\u65f6\uff0c\u6d89\u53ca3\u4e2a\u5bf9\u7b49\u4f53\u64a4\u56de\u3002"
+}

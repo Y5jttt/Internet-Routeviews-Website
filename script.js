@@ -148,7 +148,7 @@ function renderEventCards(eventsCache, append = false) {
     const prefixColor = ev.type === 'B' ? '#FF6B6B' : ev.type === 'C' ? '#FBBF24' : '#A78BFA';
 
     const link = document.createElement('a');
-    link.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix || '')}`;
+    link.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix || '')}&vps=${ev.vps || ''}`;
     link.style.textDecoration = 'none';
     link.style.color = 'inherit';
     link.style.display = 'block';
