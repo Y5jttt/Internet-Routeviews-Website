@@ -11,6 +11,8 @@ const TYPE_LABELS = {
 
 let dailyChart = null, typeChart = null;
 let eventsCache = null;
+let eventPage = 0;
+const EVENT_PAGE_SIZE = 10;
 
 async function loadEvents() {
   try {
@@ -47,9 +49,7 @@ function renderStats(data) {
 function renderDailyChart(data) {
   const ctx = document.getElementById('dailyChart').getContext('2d');
   const trend = data.daily_trend || [];
-  
   if (dailyChart) { dailyChart.destroy(); }
-  
   dailyChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -87,18 +87,12 @@ function renderTypeChart(data) {
   const labels = Object.keys(byType).map(k => TYPE_LABELS[k] || k);
   const values = Object.values(byType);
   const colors = Object.keys(byType).map(k => COLORS[k] || '#6B7280');
-  
   if (typeChart) { typeChart.destroy(); }
-  
   typeChart = new Chart(ctx, {
     type: 'doughnut',
-    data: {
-      labels,
-      datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }]
-    },
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }] },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
       plugins: {
         legend: {
           position: 'bottom',
@@ -112,13 +106,11 @@ function renderTypeChart(data) {
 function renderTopPrefixes(data) {
   const tbody = document.getElementById('prefixBody');
   tbody.innerHTML = '';
-  
   const prefixes = data.top_prefixes || [];
   if (prefixes.length === 0) {
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#6B7280;">暂无数据</td></tr>';
     return;
   }
-  
   prefixes.slice(0, 50).forEach((p, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${i+1}</td>
@@ -132,77 +124,81 @@ function renderTopPrefixes(data) {
   });
 }
 
-function renderEventCards(eventsCache) {
+function renderEventCards(eventsCache, append = false) {
   const container = document.getElementById('eventsContainer');
+  const loadMore = document.getElementById('loadMoreBtn');
   if (!container || !eventsCache) return;
-  
-  const filtered = (eventsCache.events || [])
-    .filter(e => ['B','C','D'].includes(e.type))
-    .slice(0, 10);
-  
-  container.innerHTML = '';
-  
-  filtered.forEach(ev => {
-    const start = ev.start ? new Date(ev.start * 1000).toISOString().slice(5, 16).replace('T', ' ') : '?';
+
+  const allCards = (eventsCache.events || []).filter(e => ['B','C','D'].includes(e.type));
+  const total = allCards.length;
+
+  if (!append) {
+    eventPage = 0;
+    container.innerHTML = '';
+  }
+
+  const start = eventPage * EVENT_PAGE_SIZE;
+  const end = Math.min(start + EVENT_PAGE_SIZE, total);
+  const pageItems = allCards.slice(start, end);
+
+  pageItems.forEach(ev => {
+    const startTime = ev.start ? new Date(ev.start * 1000).toISOString().slice(5, 16).replace('T', ' ') : '?';
     const duration = ev.end && ev.start ? Math.round((ev.end - ev.start) / 60) : '?';
     const typeNames = {B:'全网故障', C:'路由振荡', D:'永久消失'};
-    
     const prefixColor = ev.type === 'B' ? '#FF6B6B' : ev.type === 'C' ? '#FBBF24' : '#A78BFA';
-    
+
     const link = document.createElement('a');
     link.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix || '')}`;
     link.style.textDecoration = 'none';
     link.style.color = 'inherit';
     link.style.display = 'block';
-    
-    link.innerHTML = `
-      <div class="event-card" style="cursor:pointer;">
-        <div class="event-card-header">
-          <span class="event-card-prefix" style="color:${prefixColor}">${ev.prefix}</span>
-          <span class="event-type-badge event-type-${ev.type}">${ev.type} ${typeNames[ev.type] || ''}</span>
-        </div>
-        <div class="event-card-reason">${ev.reason || ''}</div>
-        <div class="event-card-meta">
-          <span>${start}</span>
-          <span>${duration}m</span>
-          <span>${ev.peers || '?'} 对等体</span>
-        </div>
+    link.innerHTML = `<div class="event-card" style="cursor:pointer;">
+      <div class="event-card-header">
+        <span class="event-card-prefix" style="color:${prefixColor}">${ev.prefix}</span>
+        <span class="event-type-badge event-type-${ev.type}">${ev.type} ${typeNames[ev.type] || ''}</span>
       </div>
-    `;
-    
+      <div class="event-card-reason">${ev.reason || ''}</div>
+      <div class="event-card-meta">
+        <span>${startTime}</span>
+        <span>${duration}m</span>
+        <span>${ev.peers || '?'} 对等体</span>
+      </div>
+    </div>`;
     container.appendChild(link);
   });
+
+  eventPage++;
+
+  if (loadMore) {
+    if (end >= total) {
+      loadMore.style.display = 'none';
+    } else {
+      loadMore.style.display = 'block';
+    }
+  }
 }
 
 async function doSearch() {
   const input = document.getElementById('searchInput').value.trim();
   const resultDiv = document.getElementById('searchResult');
-  
+
   if (!input) {
     resultDiv.innerHTML = '<div class="search-empty">输入前缀后点击查询</div>';
     return;
   }
-  
   resultDiv.innerHTML = '<div class="search-empty">查询中...</div>';
-  
-  // 根据 hash 找到对应 VPS
-  const prefix = input;
-  // 将前缀转为文件名格式
-  const filePrefix = prefix.replace('/', '_');
-  
+
+  const filePrefix = input.replace('/', '_');
   try {
     const res = await fetch(`data/prefixes/${filePrefix}.json`);
     if (!res.ok) throw new Error('未找到');
     const data = await res.json();
-    
     const events = data.events || [];
     if (events.length === 0) {
       resultDiv.innerHTML = '<div class="search-empty">该前缀没有记录事件</div>';
       return;
     }
-    
-    resultDiv.innerHTML = `<div style="font-weight:600;margin-bottom:8px;font-family:JetBrains Mono;color:var(--accent);">${prefix} — ${events.length} 条事件</div>`;
-    
+    resultDiv.innerHTML = `<div style="font-weight:600;margin-bottom:8px;font-family:JetBrains Mono;color:var(--accent);">${input} — ${events.length} 条事件</div>`;
     events.slice(0, 20).forEach(ev => {
       const div = document.createElement('div');
       div.className = 'event-item';
@@ -210,21 +206,18 @@ async function doSearch() {
         <span class="event-reason">${ev.reason || ''}</span>`;
       resultDiv.appendChild(div);
     });
-    
     if (events.length > 20) {
       resultDiv.innerHTML += `<div class="search-empty" style="margin-top:8px;">...还有 ${events.length - 20} 条</div>`;
     }
   } catch(e) {
-    resultDiv.innerHTML = `<div class="search-empty">未找到前缀"${prefix}"的相关记录</div>`;
+    resultDiv.innerHTML = `<div class="search-empty">未找到前缀"${input}"的相关记录</div>`;
   }
 }
 
 function showEventList(events, typeFilter) {
   const resultDiv = document.getElementById('searchResult');
   const title = typeFilter ? `类型 ${typeFilter} 事件 (前 ${events.length} 条)` : '最新事件 (前 50 条)';
-  
   let html = `<div style="font-weight:600;margin-bottom:8px;">${title}</div>`;
-  
   events.forEach((ev, i) => {
     const start = ev.start ? new Date(ev.start * 1000).toISOString().slice(5, 16).replace('T', ' ') : '?';
     const badge = `<span class="event-type-badge event-type-${ev.type}">${ev.type}</span>`;
@@ -235,27 +228,32 @@ function showEventList(events, typeFilter) {
       <span style="font-family:JetBrains Mono;font-size:11px;color:#6B7280;">${ev.reason ? ev.reason.slice(0, 30) : ''}</span>
     </div>`;
   });
-  
   resultDiv.innerHTML = html;
 }
 
 async function init() {
   const data = await loadData();
   if (!data) return;
-  
-  document.getElementById('updateTime').textContent = 
-    '更新于 ' + (data.generated_at || '—');
-  
+
+  document.getElementById('updateTime').textContent = '更新于 ' + (data.generated_at || '—');
+
   renderStats(data);
   try { renderDailyChart(data); } catch(e) { console.log('图表不可用:', e.message); }
   try { renderTypeChart(data); } catch(e) { console.log('图表不可用:', e.message); }
   renderTopPrefixes(data);
-  
-  // 加载 events 概要
+
   try { await loadEvents(); } catch(e) {}
   try { renderEventCards(eventsCache); } catch(e) { console.log(e); }
-  
-  // 点击统计卡片，显示对应类型的事件
+
+  // Load more button
+  const loadMore = document.getElementById('loadMoreBtn');
+  if (loadMore) {
+    loadMore.addEventListener('click', () => {
+      renderEventCards(eventsCache, true);
+    });
+  }
+
+  // Click stat cards
   document.querySelectorAll('.stat-card').forEach((card, i) => {
     card.style.cursor = 'pointer';
     card.title = '点击查看详情';
@@ -270,13 +268,13 @@ async function init() {
       }
     });
   });
-  
+
   document.getElementById('searchBtn').addEventListener('click', doSearch);
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch();
   });
-  
-  // 页面就绪动画
+
+  // Animation
   document.querySelectorAll('.stat-card').forEach((el, i) => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(12px)';

@@ -207,3 +207,12 @@ body {
   font-family:var(--font-mono);
 }
 .event-card-time { color:var(--muted); }
+
+.load-more-btn {
+  display:block; width:100%; padding:12px; margin-top:16px;
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:8px; color:var(--accent); font-size:14px;
+  font-weight:600; font-family:var(--font-ui); cursor:pointer;
+  transition:background 0.2s, border-color 0.2s;
+}
+.load-more-btn:hover { background:rgba(0,212,170,0.05); border-color:var(--accent); }
