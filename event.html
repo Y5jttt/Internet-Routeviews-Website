@@ -284,11 +284,11 @@ function renderEvent(ev) {
   badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;
   badge.style.color = COLORS[type] || '#fff';
   
-  
   // Topology - SVG Graph (改良版：横向布局 + 色系分区)
-  const topo = ev.topology || [];
   let topoHtml = '';
-  if (topo.length > 0) {
+  try {
+    const topo = ev.topology || [];
+    if (topo.length > 0) {
     // 解析路径，构建邻接图
     const peers = [];                // { asn, ip, path: [asn,...] }
     const transitAS = new Set();     // 中转 AS
@@ -424,7 +424,7 @@ function renderEvent(ev) {
         fill="none" stroke="${color}" stroke-width="${Math.min(0.8 + eg.count * 0.3, 3)}" 
         stroke-opacity="${opacity}" stroke-linecap="round" stroke-linejoin="round"/>`;
       
-      drawnEdges.set(key);
+      drawnEdges.add(key);
     });
     
     // 绘制节点
@@ -475,6 +475,7 @@ function renderEvent(ev) {
   } else {
     topoHtml = '<div style="color:var(--muted);font-size:13px;">无路径数据</div>';
   }
+  } catch(e) { topoHtml = '<div style="color:var(--muted);font-size:12px;">拓扑渲染异常</div>'; }
   document.getElementById('topoContent').innerHTML = topoHtml;
   const wls = ev.w_timeline || [];
   const als = ev.a_timeline || [];
