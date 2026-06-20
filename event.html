@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>事件详情 — BGP Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.breadcrumb { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.breadcrumb a { color:var(--accent); text-decoration:none; }
+.breadcrumb a:hover { text-decoration:underline; }
+
+.hero-bar {
+  background:var(--card); border-radius:12px; padding:24px 28px;
+  border:1px solid var(--border); margin-bottom:24px;
+}
+.hero-bar h1 { font-size:22px; font-weight:700; font-family:var(--font-mono); letter-spacing:-0.5px; }
+.hero-bar .meta { display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; font-size:13px; color:var(--muted); font-family:var(--font-mono); }
+.hero-bar .meta span { display:flex; align-items:center; gap:4px; }
+.hero-bar .meta strong { color:var(--text); font-weight:600; }
+
+.section-box {
+  background:var(--card); border-radius:12px; padding:20px 24px;
+  border:1px solid var(--border); margin-bottom:16px;
+}
+.section-box h2 { font-size:15px; font-weight:600; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.section-box h3 { font-size:13px; font-weight:600; margin:16px 0 8px; color:var(--accent); }
+
+.topo-table { width:100%; border-collapse:collapse; font-size:13px; }
+.topo-table th { text-align:left; padding:6px 10px; font-weight:600; color:var(--muted); font-size:11px; border-bottom:1px solid var(--border); }
+.topo-table td { padding:6px 10px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:12px; }
+.topo-table tr:last-child td { border-bottom:none; }
+.topo-table .peer-ip { color:var(--muted); }
+
+.timeline-list { max-height:400px; overflow-y:auto; }
+.timeline-item {
+  display:flex; gap:12px; padding:6px 0;
+  font-family:var(--font-mono); font-size:12px;
+  border-bottom:1px solid rgba(31,41,55,0.5);
+}
+.timeline-item:last-child { border-bottom:none; }
+.timeline-ts { color:var(--muted); min-width:80px; }
+.timeline-peer { color:var(--text); min-width:60px; }
+.timeline-aspath { color:var(--accent); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.conclusion-text { font-size:13px; line-height:1.8; color:var(--text); }
+.conclusion-text strong { color:var(--accent); }
+
+.group-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+.group-table th { text-align:left; padding:6px 10px; font-weight:600; color:var(--muted); font-size:11px; border-bottom:1px solid var(--border); }
+.group-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
+.group-table tr:last-child td { border-bottom:none; }
+
+@media(max-width:600px) {
+  .hero-bar .meta { flex-direction:column; gap:8px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <a href="./" style="text-decoration:none;display:flex;align-items:center;gap:10px;color:inherit;">
+        <span class="nav-logo">◉</span>
+        <span class="nav-title">BGP Monitor</span>
+      </a>
+    </div>
+    <div class="nav-meta">
+      <span class="nav-period">事件详情</span>
+    </div>
+  </div>
+</nav>
+
+<main class="main" id="app">
+  <div class="breadcrumb"><a href="./">← 返回仪表盘</a> / <span id="bcPrefix">—</span></div>
+  
+  <div class="hero-bar" id="heroBar">
+    <h1 id="eventPrefix">—</h1>
+    <div class="meta">
+      <span>类型 <strong id="eventTypeBadge">—</strong></span>
+      <span>开始 <strong id="eventStart">—</strong></span>
+      <span>结束 <strong id="eventEnd">—</strong></span>
+      <span>持续 <strong id="eventDuration">—</strong></span>
+      <span>对等体 <strong id="eventPeers">—</strong></span>
+    </div>
+  </div>
+
+  <div class="section-box" id="topoSection">
+    <h2>一、拓扑结构</h2>
+    <div id="topoContent"></div>
+  </div>
+
+  <div class="section-box" id="timelineSection">
+    <h2>二、事件时间线</h2>
+    <div id="timelineContent"></div>
+  </div>
+
+  <div class="section-box" id="conclusionSection">
+    <h2>三、结论</h2>
+    <div class="conclusion-text" id="conclusionContent"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>Data from RouteViews route-views2</span>
+    <span id="updateTime">—</span>
+  </div>
+</footer>
+
+<script>
+const COLORS = {A:'#00D4AA', B:'#FF6B6B', C:'#FBBF24', D:'#A78BFA', P:'#60A5FA'};
+const TYPE_NAMES = {A:'单对等体撤回', B:'全网不可达', C:'路由振荡', D:'永久消失', P:'部分断开'};
+
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  return d.toISOString().slice(5,16).replace('T',' ');
+}
+function fmtTimeFull(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  return d.toISOString().slice(0,19).replace('T',' ');
+}
+function fmtDur(sec) {
+  if (!sec) return '—';
+  if (sec > 86400) return (sec/86400).toFixed(1)+' 天';
+  if (sec > 3600) return (sec/3600).toFixed(1)+' 小时';
+  if (sec > 60) return (sec/60).toFixed(0)+' 分钟';
+  return sec.toFixed(0)+' 秒';
+}
+
+async function loadEvent() {
+  const params = new URLSearchParams(location.search);
+  const eid = params.get('id');
+  const prefix = params.get('prefix');
+  
+  if (!eid && !prefix) {
+    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:40px;color:#6B7280;">未指定事件 ID 或前缀</div>';
+    return;
+  }
+  
+  let eventData = null;
+  
+  if (eid) {
+    try {
+      const r = await fetch(`data/events/event_${eid}.json`);
+      if (r.ok) eventData = await r.json();
+    } catch(e) {}
+  } else if (prefix) {
+    // Load from prefix JSON
+    const pf = prefix.replace('/','_');
+    try {
+      const r = await fetch(`data/prefixes/${pf}.json`);
+      if (r.ok) {
+        const data = await r.json();
+        if (data.events && data.events[0]) {
+          eventData = data.events[0];
+          eventData.prefix = prefix;
+        }
+      }
+    } catch(e) {}
+  }
+  
+  if (!eventData) {
+    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:40px;color:#6B7280;">事件数据未找到</div>';
+    return;
+  }
+  
+  renderEvent(eventData);
+}
+
+function renderEvent(ev) {
+  // Basic info
+  document.getElementById('bcPrefix').textContent = ev.prefix || '—';
+  document.getElementById('eventPrefix').textContent = ev.prefix || '—';
+  document.getElementById('eventStart').textContent = fmtTimeFull(ev.start_time || ev.start);
+  document.getElementById('eventEnd').textContent = ev.end_time || ev.end ? fmtTimeFull(ev.end_time || ev.end) : '活跃中';
+  document.getElementById('eventDuration').textContent = fmtDur(ev.duration_sec || (ev.end_time||ev.end) - (ev.start_time||ev.start) || 0);
+  document.getElementById('eventPeers').textContent = ev.total_peers || ev.peers || '?';
+  
+  const type = ev.event_type || ev.type;
+  const badge = document.getElementById('eventTypeBadge');
+  badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;
+  badge.style.color = COLORS[type] || '#fff';
+  
+  // Topology
+  const topo = ev.topology || [];
+  let topoHtml = '';
+  if (topo.length > 0) {
+    // Group paths by last AS
+    const groups = {};
+    topo.forEach(p => {
+      const path = (p.as_path || p.path || '').trim();
+      const parts = path.split(' ');
+      const origin = parts[parts.length-1] || '?';
+      if (!groups[origin]) groups[origin] = [];
+      groups[origin].push(p);
+    });
+    
+    topoHtml += `<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">共 ${topo.length} 条路径，全部经过以下 AS：</p>`;
+    topoHtml += `<table class="group-table"><tr><th>对等体</th><th>AS_PATH</th><th>起源 AS</th></tr>`;
+    topo.slice(0,20).forEach(p => {
+      const path = p.as_path || p.path || '';
+      const parts = path.split(' ');
+      const origin = parts[parts.length-1] || '?';
+      topoHtml += `<tr><td style="font-family:JetBrains Mono;font-size:12px;color:var(--muted);">${p.peer_ip || p.ip || ''}</td>
+        <td style="font-family:JetBrains Mono;font-size:12px;color:var(--accent);">${path}</td>
+        <td style="font-family:JetBrains Mono;font-size:12px;color:var(--warning);">AS${origin}</td></tr>`;
+    });
+    topoHtml += `</table>`;
+    if (topo.length > 20) topoHtml += `<div style="margin-top:8px;font-size:12px;color:var(--muted);">...还有 ${topo.length-20} 条</div>`;
+  } else {
+    topoHtml = '<div style="color:var(--muted);font-size:13px;">无路径数据</div>';
+  }
+  document.getElementById('topoContent').innerHTML = topoHtml;
+  
+  // Timeline
+  const wls = ev.w_timeline || [];
+  const als = ev.a_timeline || [];
+  const updates = ev.updates || [];
+  let tlHtml = '';
+  
+  if (updates.length > 0) {
+    tlHtml += `<div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;color:var(--muted);">
+      <span>撤回收敛: <strong style="color:var(--warning);">${updates.filter(u=>u.type==='W').length} 次</strong></span>
+      <span>恢复宣告: <strong style="color:var(--accent);">${updates.filter(u=>u.type==='A').length} 次</strong></span>
+      <span>涉及对等体: <strong>${new Set(updates.map(u=>u.peer_as)).size}</strong></span>
+    </div>`;
+    tlHtml += `<div class="timeline-list">`;
+    updates.slice(0,40).forEach(u => {
+      const ts = fmtTime(u.ts || u.timestamp);
+      const typeMark = u.type === 'W' ? '❌' : '✅';
+      const color = u.type === 'W' ? 'var(--warning)' : 'var(--accent)';
+      const path = u.as_path || u.path || '';
+      tlHtml += `<div class="timeline-item">
+        <span class="timeline-ts">${ts}</span>
+        <span class="timeline-peer" style="color:${color}">${typeMark} AS${u.peer_as}</span>
+        <span class="timeline-aspath">${path ? path : ''}</span>
+      </div>`;
+    });
+    if (updates.length > 40) tlHtml += `<div style="padding:8px 0;font-size:11px;color:var(--muted);text-align:center;">...还有 ${updates.length-40} 条</div>`;
+    tlHtml += `</div>`;
+    
+    // First/last analysis
+    const wFirst = updates.find(u => u.type === 'W');
+    const wLast = [...updates].reverse().find(u => u.type === 'W');
+    const aFirst = updates.find(u => u.type === 'A');
+    const aLast = [...updates].reverse().find(u => u.type === 'A');
+    if (wFirst && wLast) {
+      const spread = wLast.ts - wFirst.ts;
+      tlHtml += `<div style="margin-top:12px;font-size:12px;color:var(--muted);">
+        撤回收敛耗时: <strong style="color:var(--text);">${fmtDur(spread)}</strong>
+      </div>`;
+    }
+    if (aFirst && aLast) {
+      const spread = aLast.ts - aFirst.ts;
+      tlHtml += `<div style="font-size:12px;color:var(--muted);">
+        恢复传播耗时: <strong style="color:var(--text);">${fmtDur(spread)}</strong>
+      </div>`;
+    }
+  } else if (wls.length > 0 || als.length > 0) {
+    tlHtml += `<div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;color:var(--muted);">
+      <span>撤回: <strong style="color:var(--warning);">${wls.length} 次</strong></span>
+      <span>宣告: <strong style="color:var(--accent);">${als.length} 次</strong></span>
+    </div>`;
+    tlHtml += `<div class="timeline-list">`;
+    const allEv = [...wls.map(w=>({...w,type:'W'})), ...als.map(a=>({...a,type:'A'}))].sort((a,b)=>a.ts-b.ts);
+    allEv.slice(0,40).forEach(u => {
+      const ts = fmtTime(u.ts);
+      const color = u.type === 'W' ? 'var(--warning)' : 'var(--accent)';
+      const path = u.path || '';
+      tlHtml += `<div class="timeline-item">
+        <span class="timeline-ts">${ts}</span>
+        <span class="timeline-peer" style="color:${color}">${u.type==='W' ? '❌' : '✅'} AS${u.peer}</span>
+        <span class="timeline-aspath">${path || ''}</span>
+      </div>`;
+    });
+    if (allEv.length > 40) tlHtml += `<div style="padding:8px 0;font-size:11px;color:var(--muted);text-align:center;">...还有 ${allEv.length-40} 条</div>`;
+    tlHtml += `</div>`;
+  } else {
+    tlHtml = '<div style="color:var(--muted);font-size:13px;">无时间线数据</div>';
+  }
+  document.getElementById('timelineContent').innerHTML = tlHtml;
+  
+  // Conclusion
+  const reason = ev.close_reason || ev.reason || '';
+  const dur = ev.duration_sec || ((ev.end_time||ev.end) - (ev.start_time||ev.start)) || 0;
+  const typeName = TYPE_NAMES[ev.event_type||ev.type] || '';
+  const wPeers = ev.w_peers ? ev.w_peers.length : (ev.withdrawn || 0);
+  const aPeers = ev.a_peers ? ev.a_peers.length : 0;
+  
+  let conclusion = `<p><strong>事件摘要</strong></p>`;
+  conclusion += `<p>该前缀在 ${fmtTimeFull(ev.start_time||ev.start)} 至 ${fmtTimeFull(ev.end_time||ev.end)} 期间发生了一起 <strong>${typeName}</strong> 事件。</p>`;
+  conclusion += `<p>${reason}</p>`;
+  conclusion += `<p>持续 ${fmtDur(dur)}，涉及 ${wPeers} 个对等体撤回，${aPeers} 个恢复。</p>`;
+  
+  if (ev.topology && ev.topology.length > 0) {
+    const firstPath = ev.topology[0].as_path || ev.topology[0].path || '';
+    const parts = firstPath.split(' ');
+    if (parts.length >= 2) {
+      const origin = parts[parts.length-1];
+      conclusion += `<p style="margin-top:12px;"><strong>路径分析</strong></p>`;
+      conclusion += `<p>所有路径均经过 AS${origin}，故障源很可能位于该 AS 或其上游。</p>`;
+    }
+  }
+  
+  document.getElementById('conclusionContent').innerHTML = conclusion;
+}
+
+document.addEventListener('DOMContentLoaded', loadEvent);
+</script>
+</body>
+</html>

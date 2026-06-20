@@ -167,9 +167,8 @@ function renderEventCards(eventsCache) {
     `;
     
     card.addEventListener('click', () => {
-      document.getElementById('searchInput').value = ev.prefix;
-      doSearch();
-      document.getElementById('searchSection').scrollIntoView({behavior:'smooth'});
+      // 跳转到事件详情页面
+      window.location.href = `event.html?id=${ev.id || ''}&prefix=${encodeURIComponent(ev.prefix)}`;
     });
     
     container.appendChild(card);
