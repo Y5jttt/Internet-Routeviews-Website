@@ -151,7 +151,7 @@ async function loadEvent() {
       if (r.ok) eventData = await r.json();
     } catch(e) {}
     
-    // Fallback: try to find in events_summary
+    // Fallback 1: events_summary
     if (!eventData) {
       try {
         const s = await fetch('data/events_summary.json');
@@ -163,6 +163,27 @@ async function loadEvent() {
             eventData.start_time = found.start;
             eventData.end_time = found.end;
             eventData.event_type = found.type;
+          }
+        }
+      } catch(e) {}
+    }
+    
+    // Fallback 2: prefix json
+    if (!eventData && prefix) {
+      const pf = prefix.replace('/','_');
+      try {
+        const r = await fetch(`data/prefixes/${pf}.json`);
+        if (r.ok) {
+          const data = await r.json();
+          if (data.events && data.events[0]) {
+            eventData = data.events[0];
+            eventData.prefix = prefix;
+            // Normalize prefix JSON format to event format
+            if (eventData.time && !eventData.start_time) {
+              const parts = eventData.time.split('→');
+              if (parts[0]) eventData.start_time = parts[0].trim();
+              if (parts[1]) eventData.end_time = parts[1].trim();
+            }
           }
         }
       } catch(e) {}
@@ -191,15 +212,40 @@ async function loadEvent() {
 }
 
 function renderEvent(ev) {
-  // Basic info
-  document.getElementById('bcPrefix').textContent = ev.prefix || '—';
-  document.getElementById('eventPrefix').textContent = ev.prefix || '—';
-  document.getElementById('eventStart').textContent = fmtTimeFull(ev.start_time || ev.start);
-  document.getElementById('eventEnd').textContent = ev.end_time || ev.end ? fmtTimeFull(ev.end_time || ev.end) : '活跃中';
-  document.getElementById('eventDuration').textContent = fmtDur(ev.duration_sec || (ev.end_time||ev.end) - (ev.start_time||ev.start) || 0);
-  document.getElementById('eventPeers').textContent = ev.total_peers || ev.peers || '?';
+  // Normalize field names from different sources
+  const prefix = ev.prefix || '—';
+  const type = ev.event_type || ev.type || '?';
+  let startStr = ev.start_time || ev.start;
+  let endStr = ev.end_time || ev.end;
   
-  const type = ev.event_type || ev.type;
+  // Handle prefix JSON format (time strings like "01-01 00:00")
+  if (typeof startStr === 'string' && startStr.length < 20) {
+    const year = '2026-';
+    startStr = year + startStr;
+    if (startStr.length < 16) startStr += ':00';
+  }
+  if (typeof endStr === 'string' && endStr.length < 20) {
+    const year = '2026-';
+    endStr = year + endStr;
+    if (endStr.length < 16) endStr += ':00';
+  }
+  
+  const startDate = typeof startStr === 'number' ? new Date(startStr * 1000) : new Date(startStr);
+  const endDate = typeof endStr === 'number' ? new Date(endStr * 1000) : endStr ? new Date(endStr) : null;
+  const startDisplay = startDate && !isNaN(startDate) ? startDate.toISOString().slice(0,19).replace('T',' ') : (ev.start_time || ev.start || '—');
+  const endDisplay = endDate && !isNaN(endDate) ? endDate.toISOString().slice(0,19).replace('T',' ') : (endStr ? '活跃中' : '—');
+  
+  const durSec = ev.duration_sec || (typeof startStr === 'number' && typeof endStr === 'number' ? endStr - startStr : 0);
+  const durDisplay = fmtDur(durSec);
+  
+  // Set basic info
+  document.getElementById('bcPrefix').textContent = prefix;
+  document.getElementById('eventPrefix').textContent = prefix;
+  document.getElementById('eventStart').textContent = startDisplay;
+  document.getElementById('eventEnd').textContent = endDisplay;
+  document.getElementById('eventDuration').textContent = durDisplay;
+  document.getElementById('eventPeers').textContent = ev.total_peers || ev.peers || (ev.withdrawn || '?');
+  
   const badge = document.getElementById('eventTypeBadge');
   badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;
   badge.style.color = COLORS[type] || '#fff';
@@ -305,15 +351,15 @@ function renderEvent(ev) {
   
   // Conclusion
   const reason = ev.close_reason || ev.reason || '';
-  const dur = ev.duration_sec || ((ev.end_time||ev.end) - (ev.start_time||ev.start)) || 0;
+  const dur = ev.duration_sec || (typeof startStr === 'number' && typeof endStr === 'number' ? endStr - startStr : 0);
   const typeName = TYPE_NAMES[ev.event_type||ev.type] || '';
   const wPeers = ev.w_peers ? ev.w_peers.length : (ev.withdrawn || 0);
   const aPeers = ev.a_peers ? ev.a_peers.length : 0;
   
   let conclusion = `<p><strong>事件摘要</strong></p>`;
-  conclusion += `<p>该前缀在 ${fmtTimeFull(ev.start_time||ev.start)} 至 ${fmtTimeFull(ev.end_time||ev.end)} 期间发生了一起 <strong>${typeName}</strong> 事件。</p>`;
+  conclusion += `<p>该前缀在 ${startDisplay} 至 ${endDisplay} 期间发生了一起 <strong>${typeName}</strong> 事件。</p>`;
   conclusion += `<p>${reason}</p>`;
-  conclusion += `<p>持续 ${fmtDur(dur)}，涉及 ${wPeers} 个对等体撤回，${aPeers} 个恢复。</p>`;
+  conclusion += `<p>持续 ${durDisplay}，涉及 ${wPeers} 个对等体撤回，${aPeers} 个恢复。</p>`;
   
   if (ev.topology && ev.topology.length > 0) {
     const firstPath = ev.topology[0].as_path || ev.topology[0].path || '';
