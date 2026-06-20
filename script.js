@@ -249,13 +249,13 @@ async function init() {
     '更新于 ' + (data.generated_at || '—');
   
   renderStats(data);
-  renderDailyChart(data);
-  renderTypeChart(data);
+  try { renderDailyChart(data); } catch(e) { console.log('图表不可用:', e.message); }
+  try { renderTypeChart(data); } catch(e) { console.log('图表不可用:', e.message); }
   renderTopPrefixes(data);
   
   // 加载 events 概要
-  await loadEvents();
-  renderEventCards(eventsCache);
+  try { await loadEvents(); } catch(e) {}
+  try { renderEventCards(eventsCache); } catch(e) { console.log(e); }
   
   // 点击统计卡片，显示对应类型的事件
   document.querySelectorAll('.stat-card').forEach((card, i) => {
