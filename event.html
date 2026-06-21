@@ -556,7 +556,7 @@ function renderEvent(ev) {
     const peerCount = rawPeers.length;
     topoHtml = `<p style="font-size:12px;color:var(--muted);margin-bottom:6px;">${peerCount} 条路径 · O:AS${origin} · ${tier1Count} 个骨干</p><div style="overflow-x:auto;padding:4px 0;">${svg}</div>`;
   } catch(e) {
-    topoHtml = '<div style="color:var(--muted);font-size:12px;">' + (e.message === 'no data' ? '无路径数据' : '拓扑异常') + '</div>';
+    topoHtml = '<div style="color:var(--muted);font-size:12px;">' + (e.message === 'no data' ? '无路径数据' : '拓扑异常: ' + e.message) + '</div>';
   }
   document.getElementById('topoContent').innerHTML = topoHtml;
   
