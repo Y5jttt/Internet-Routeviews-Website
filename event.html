@@ -284,198 +284,168 @@ function renderEvent(ev) {
   badge.textContent = `${type} ${TYPE_NAMES[type] || ''}`;
   badge.style.color = COLORS[type] || '#fff';
   
-  // Topology - SVG Graph (改良版：横向布局 + 色系分区)
+  // ========== Topology: Origin (left) → Transit groups (middle) → Peers (right) ==========
   let topoHtml = '';
   try {
     const topo = ev.topology || [];
     if (topo.length > 0) {
-    // 解析路径，构建邻接图
-    const peers = [];                // { asn, ip, path: [asn,...] }
-    const transitAS = new Set();     // 中转 AS
-    const allAS = new Set();         // 所有 AS
-    let originAS = null;
-    
-    topo.forEach(p => {
-      const asnList = (p.as_path || p.path || '').trim().split(/\s+/);
-      if (asnList.length < 2) return;
-      const peer = { asn: asnList[0], ip: p.peer_ip, path: asnList };
-      peers.push(peer);
-      asnList.forEach((a, i) => {
-        allAS.add(a);
-        if (i > 0 && i < asnList.length - 1) transitAS.add(a);
+      // Deduplicate consecutive ASNs (handle prepending)
+      function dedup(arr) { return arr.filter((v,i,a) => i===0 || v !== a[i-1]); }
+      
+      // Parse: group peers by first-hop transit AS
+      const groups = {};
+      const allAsSet = new Set();
+      let rootOrigin = null;
+      
+      topo.forEach(p => {
+        const raw = (p.as_path || p.path || '').trim().split(/\s+/);
+        const path = dedup(raw);
+        if (path.length < 2) return;
+        const origin = path[path.length - 1];
+        rootOrigin = origin;
+        const peerAsn = path[0];
+        const transitKey = path.length > 2 ? path[1] : '__direct';
+        if (!groups[transitKey]) groups[transitKey] = { transitAs: transitKey, peers: [] };
+        groups[transitKey].peers.push({ asn: peerAsn, ip: p.peer_ip || '', path });
+        path.forEach(a => allAsSet.add(a));
       });
-      originAS = asnList[asnList.length - 1];
-    });
-    
-    // 着色：按第一个中转 AS 分组
-    const groupColors = [
-      '#00D4AA', '#60A5FA', '#FBBF24', '#A78BFA', '#FF6B6B',
-      '#34D399', '#818CF8', '#F472B6', '#FCD34D', '#FB923C',
-      '#2DD4BF', '#67E8F9', '#A78BFA', '#E879F9', '#FDA4AF',
-    ];
-    const peerGroups = {}; // 第一个中转 AS → peer 列表
-    peers.forEach(p => {
-      const key = p.path.length > 1 ? p.path[1] : '__direct';
-      if (!peerGroups[key]) peerGroups[key] = [];
-      peerGroups[key].push(p);
-    });
-    const groupKeys = Object.keys(peerGroups);
-    const peerToColor = {};
-    groupKeys.forEach((k, i) => {
-      const c = groupColors[i % groupColors.length];
-      peerGroups[k].forEach(p => { peerToColor[p.asn] = c; });
-    });
-    
-    // 确定层数
-    const layerMap = {}; // ASN → layer index
-    const maxLayerPerPeer = {};
-    peers.forEach(p => {
-      p.path.forEach((a, i) => {
-        if (!layerMap[a] || layerMap[a] > i) layerMap[a] = i;
+      
+      const groupKeys = Object.keys(groups).sort();
+      const palette = ['#00D4AA','#60A5FA','#FBBF24','#A78BFA','#FF6B6B','#34D399','#818CF8','#F472B6','#FCD34D','#FB923C','#2DD4BF','#67E8F9','#E879F9','#FDA4AF','#6EE7B7'];
+      groupKeys.forEach((k,i) => { groups[k].color = palette[i % palette.length]; });
+      
+      // Layout params
+      const NODE_W = 90, NODE_H = 28, COL_GAP = 8, GRP_GAP = 20;
+      const PAD_T = 40, PAD_B = 48, PAD_L = 16;
+      
+      // Calculate per-group heights
+      let maxH = 0;
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        const n = g.peers.length;
+        g.peerH = n * (NODE_H + 6) - 6;
+        g.boxH = g.peerH + (k !== '__direct' ? NODE_H + 10 : 0);
+        maxH = Math.max(maxH, g.boxH);
       });
-    });
-    const maxLayer = Math.max(...Object.values(layerMap).filter(v => v < 100));
-    
-    // 按层分组
-    const byLayer = {};
-    Object.entries(layerMap).forEach(([asn, layer]) => {
-      if (!byLayer[layer]) byLayer[layer] = [];
-      byLayer[layer].push(asn);
-    });
-    
-    // 布局参数
-    const NODE_W = 100, NODE_H = 28, GAP_X = 28, GAP_Y = 10;
-    const PAD_TOP = 36, PAD_LEFT = 16, PAD_RIGHT = 16;
-    const LAYERS = Object.keys(byLayer).length;
-    
-    // 计算每层列宽（节点数）
-    const layerCols = {};
-    Object.keys(byLayer).forEach(l => { layerCols[l] = byLayer[l].length; });
-    const maxCol = Math.max(...Object.values(layerCols));
-    
-    // 计算 SVG 尺寸
-    const svgW = LAYERS * (NODE_W + GAP_X) + PAD_LEFT + PAD_RIGHT;
-    const svgH = Math.max(maxCol * (NODE_H + GAP_Y) + PAD_TOP + 20, 200);
-    
-    // 布局节点位置
-    const pos = {};
-    Object.keys(byLayer).forEach(l => {
-      const items = byLayer[l];
-      const totalH = items.length * (NODE_H + GAP_Y);
-      const startY = (svgH - totalH) / 2 + (NODE_H/2);
-      const x = PAD_LEFT + parseInt(l) * (NODE_W + GAP_X);
-      items.forEach((asn, i) => {
-        pos[asn] = { x, y: startY + i * (NODE_H + GAP_Y) };
+      const svgH = Math.max(maxH + PAD_T + PAD_B, 200);
+      const originX = PAD_L;
+      const originY = PAD_T + (svgH - PAD_T - PAD_B)/2 - NODE_H/2 + 10;
+      
+      // Position nodes
+      const pos = {};
+      if (rootOrigin) pos[rootOrigin] = { x: originX, y: originY };
+      
+      let cx = originX + NODE_W + 18;
+      const groupColumns = {};
+      
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        const colX = cx;
+        groupColumns[k] = cx;
+        let cy = PAD_T + (svgH - PAD_T - PAD_B - g.peerH)/2;
+        
+        if (k !== '__direct') {
+          cy = PAD_T + (svgH - PAD_T - PAD_B - g.boxH)/2;
+          pos[k] = { x: colX, y: cy, type: 'transit' };
+          cy += NODE_H + 10;
+        }
+        
+        g.peers.forEach((peer, i) => {
+          const py = cy + i * (NODE_H + 6);
+          pos[peer.asn] = { x: colX, y: py, type: 'peer', group: k };
+        });
+        
+        cx += NODE_W + COL_GAP + (k !== groupKeys[groupKeys.length - 1] ? GRP_GAP : 0);
       });
-    });
-    
-    // 构建 SVG
-    let svg = `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="width:100%;max-width:${Math.min(svgW, 1200)}px;height:auto;">
-      <defs>
-        <filter id="glow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
-      <rect width="${svgW}" height="${svgH}" fill="none"/>`;
-    
-    // 层标签
-    Object.keys(byLayer).forEach(l => {
-      const first = byLayer[l][0];
-      if (!pos[first]) return;
-      const label = parseInt(l) === 0 ? '对等体' : parseInt(l) === maxLayer ? '起源 AS' : `层 ${l}`;
-      svg += `<text x="${pos[first].x + NODE_W/2}" y="${PAD_TOP - 10}" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280">${label}</text>`;
-    });
-    
-    // 边：从上到下分组绘制，减少视觉重叠
-    const allEdges = [];
-    peers.forEach(p => {
-      const color = peerToColor[p.asn] || '#6B7280';
-      for (let i = 0; i < p.path.length - 1; i++) {
-        const from = p.path[i], to = p.path[i+1];
-        allEdges.push({ from, to, color, peer: p.asn });
+      
+      const svgW = cx + 16;
+      
+      // ---- Build SVG ----
+      let svg = `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="width:100%;max-width:${Math.min(svgW, 1200)}px;height:auto;">
+        <defs><filter id="g"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <rect width="${svgW}" height="${svgH}" fill="none"/>`;
+      
+      // Column headers
+      svg += `<text x="${originX + NODE_W/2}" y="${PAD_T - 10}" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280">来源 AS</text>`;
+      groupKeys.forEach(k => {
+        const cx2 = groupColumns[k];
+        const label = k === '__direct' ? '直连' : `AS${k}`;
+        svg += `<text x="${cx2 + NODE_W/2}" y="${PAD_T - 10}" text-anchor="middle" font-family="Inter" font-size="11" fill="#6B7280">${label} (${groups[k].peers.length})</text>`;
+      });
+      
+      // Background boxes per group
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        const cx2 = groupColumns[k];
+        const c = g.color;
+        const firstPeer = g.peers[0];
+        const lastPeer = g.peers[g.peers.length - 1];
+        const p1 = pos[firstPeer.asn], p2 = pos[lastPeer.asn];
+        if (!p1 || !p2) return;
+        const boxY = Math.min(p1.y, k !== '__direct' ? (pos[k] ? pos[k].y : p1.y) : p1.y) - 4;
+        const boxH = (p2.y + NODE_H - boxY) + 4;
+        svg += `<rect x="${cx2 - 4}" y="${boxY}" width="${NODE_W + 8}" height="${boxH}" rx="6" ry="6" fill="${c}" fill-opacity="0.04" stroke="${c}" stroke-opacity="0.15" stroke-width="1" stroke-dasharray="3,3"/>`;
+      });
+      
+      // Edges (origin → transit → peers)
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        const color = g.color;
+        g.peers.forEach(peer => {
+          const path = peer.path;
+          for (let i = 0; i < path.length - 1; i++) {
+            const f = path[i], t = path[i+1];
+            const p1 = pos[f], p2 = pos[t];
+            if (!p1 || !p2) continue;
+            const x1 = p1.x + NODE_W, y1 = p1.y + NODE_H/2;
+            const x2 = p2.x, y2 = p2.y + NODE_H/2;
+            svg += `<path d="M ${x1} ${y1} L ${(x1+x2)/2} ${y1} L ${(x1+x2)/2} ${y2} L ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="1.3" stroke-opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/>`;
+          }
+        });
+      });
+      
+      // Origin node
+      if (rootOrigin) {
+        svg += `<g><rect x="${originX}" y="${originY}" width="${NODE_W}" height="${NODE_H}" rx="6" ry="6" fill="#FF6B6B" stroke="#FF6B6B" stroke-width="2" filter="url(#g)"/><text x="${originX + NODE_W/2}" y="${originY + NODE_H/2 + 5}" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#fff">🏁 AS${rootOrigin}</text></g>`;
       }
-    });
-    
-    // 合并重复边，计算权重
-    const edgeGroups = {};
-    allEdges.forEach(e => {
-      const k = `${e.from}→${e.to}`;
-      if (!edgeGroups[k]) edgeGroups[k] = { from: e.from, to: e.to, colors: [], count: 0 };
-      edgeGroups[k].colors.push(e.color);
-      edgeGroups[k].count++;
-    });
-    
-    // 绘制边（用贝塞尔曲线，水平走向为主）
-    const drawnEdges = new Set();
-    Object.values(edgeGroups).forEach(eg => {
-      const p1 = pos[eg.from], p2 = pos[eg.to];
-      if (!p1 || !p2) return;
-      const key = `${p1.x},${p1.y}-${p2.x},${p2.y}`;
       
-      // 改用水平线段 + 短竖线（正交路由）
-      const x1 = p1.x + NODE_W, y1 = p1.y + NODE_H/2;
-      const x2 = p2.x, y2 = p2.y + NODE_H/2;
-      const mx = (x1 + x2) / 2;
-      const opacity = Math.min(0.15 + eg.count * 0.06, 0.5);
-      
-      // 使用主色（取第一个颜色）
-      const color = eg.colors[0];
-      
-      // 正交路径：水平 → 垂直 → 水平
-      svg += `<path d="M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}" 
-        fill="none" stroke="${color}" stroke-width="${Math.min(0.8 + eg.count * 0.3, 3)}" 
-        stroke-opacity="${opacity}" stroke-linecap="round" stroke-linejoin="round"/>`;
-      
-      drawnEdges.add(key);
-    });
-    
-    // 绘制节点
-    Object.keys(byLayer).forEach(l => {
-      byLayer[l].forEach(asn => {
-        const p = pos[asn];
+      // Transit nodes
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        if (k === '__direct') return;
+        const p = pos[k];
         if (!p) return;
-        const isOrigin = asn === originAS;
-        const isPeer = parseInt(l) === 0;
-        const nodeColor = isPeer ? (peerToColor[asn] || '#374151') : (isOrigin ? '#FF6B6B' : '#374151');
-        const fill = isOrigin ? '#FF6B6B' : '#131A2B';
-        const border = nodeColor;
-        const glow = isOrigin ? 'filter="url(#glow)"' : '';
-        
-        let label = '';
-        if (isOrigin) label = `🏁 AS${asn}`;
-        else if (isPeer) label = `AS${asn}`;
-        else label = `AS${asn}`;
-        
-        svg += `<g>
-          <rect x="${p.x}" y="${p.y}" width="${NODE_W}" height="${NODE_H}" 
-            rx="5" ry="5" fill="${fill}" stroke="${border}" stroke-width="${isOrigin ? 2 : 1.5}" ${glow}/>
-          <text x="${p.x + NODE_W/2}" y="${p.y + NODE_H/2 + 4.5}" 
-            text-anchor="middle" font-family="JetBrains Mono" font-size="11" 
-            font-weight="${isOrigin ? 700 : 500}" fill="#E5E7EB">${label}</text>
-        </g>`;
+        svg += `<g><rect x="${p.x}" y="${p.y}" width="${NODE_W}" height="${NODE_H}" rx="5" ry="5" fill="#1F2937" stroke="${g.color}" stroke-width="2"/><text x="${p.x + NODE_W/2}" y="${p.y + NODE_H/2 + 5}" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="600" fill="#E5E7EB">AS${k}</text></g>`;
       });
-    });
-    
-    // 图例
-    svg += `<g transform="translate(16, ${svgH - 40})">`;
-    const legendItems = groupKeys.slice(0, 8);
-    legendItems.forEach((k, i) => {
-      const cx = i * 130;
-      const asLabel = k === '__direct' ? '直达' : `AS${k}`;
-      const c = groupColors[i % groupColors.length];
-      svg += `<rect x="${cx}" y="0" width="10" height="10" rx="2" fill="${c}" opacity="0.6"/>
-        <text x="${cx + 14}" y="10" font-family="JetBrains Mono" font-size="10" fill="#6B7280">${asLabel}</text>`;
-    });
-    svg += `</g>`;
-    
-    svg += '</svg>';
-    
-    topoHtml = `<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">
-      ${topo.length} 条路径 · ${allAS.size} 个 AS · 按首跳中转 AS 着色（图例见底部）
-    </p>`;
-    topoHtml += `<div style="overflow-x:auto;padding:4px 0;">${svg}</div>`;
-  } else {
-    topoHtml = '<div style="color:var(--muted);font-size:13px;">无路径数据</div>';
-  }
-  } catch(e) { topoHtml = '<div style="color:var(--muted);font-size:12px;">拓扑渲染异常</div>'; }
+      
+      // Peer nodes
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        g.peers.forEach(peer => {
+          const p = pos[peer.asn];
+          if (!p) return;
+          svg += `<g><rect x="${p.x}" y="${p.y}" width="${NODE_W}" height="${NODE_H}" rx="5" ry="5" fill="#131A2B" stroke="${g.color}" stroke-width="1.5"/><text x="${p.x + NODE_W/2}" y="${p.y + NODE_H/2 + 5}" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="500" fill="#E5E7EB">AS${peer.asn}</text></g>`;
+        });
+      });
+      
+      // Legend
+      let lx = PAD_L;
+      groupKeys.forEach(k => {
+        const g = groups[k];
+        const label = k === '__direct' ? '直连' : `AS${k}`;
+        svg += `<rect x="${lx}" y="${svgH - 30}" width="8" height="8" rx="2" fill="${g.color}" opacity="0.7"/><text x="${lx + 12}" y="${svgH - 22}" font-family="JetBrains Mono" font-size="10" fill="#6B7280">${label} (${g.peers.length})</text>`;
+        lx += label.length * 7 + 44;
+      });
+      
+      svg += '</svg>';
+      
+      const transitCount = groupKeys.filter(k => k !== '__direct').length;
+      topoHtml = `<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">${topo.length} 条路径 · ${allAsSet.size} 个 AS · ${transitCount} 个出口</p><div style="overflow-x:auto;padding:4px 0;">${svg}</div>`;
+    } else {
+      topoHtml = '<div style="color:var(--muted);font-size:13px;">无路径数据</div>';
+    }
+  } catch(e) { topoHtml = '<div style="color:var(--muted);font-size:12px;">拓扑渲染异常: ' + e.message + '</div>'; }
+  document.getElementById('topoContent').innerHTML = topoHtml;
   document.getElementById('topoContent').innerHTML = topoHtml;
   const wls = ev.w_timeline || [];
   const als = ev.a_timeline || [];
