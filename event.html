@@ -408,7 +408,7 @@ function renderEvent(ev) {
       pos[k] = { x: tier1X, y: tier1Y, type: 'tier1', group: k };
       
       const peerX = tier1X + NODE_W + 6;
-      info.peers.forEach((peer, i) => {
+      info.group.peers.forEach((peer, i) => {
         pos[peer.asn] = { x: peerX, y: info.peerStartY + i * (NODE_H + PEER_GAP), type: 'peer', group: k };
       });
     });
